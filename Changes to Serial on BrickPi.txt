@@ -1,0 +1,4 @@
+Changes to use the Serial Port
+
+http://www.hobbytronics.co.uk/raspberry-pi-serial-port
+http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/

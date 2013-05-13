@@ -8,7 +8,9 @@
   - Controls Motor outputs 1-3
   - Reads Analog values of sensors 1-4
   - Reads Tachometer readings
-  - Respond to I2C calls and commands
+
+  - Change: We send and receive data from between the RPi and Arduino over serial commands.
+
   - Speed controls (to be implemented at a later time)
   - Need to convert from % power to -128 - 128
 */
@@ -18,6 +20,13 @@ Fuses:
   - Extended -  0x05
   - High     -  0xDA
   - Low      -  0xFF
+*/
+
+/* 
+Serial Protocol:
+First byte: A number
+2-n bytes: Data
+Last Byte: /n
 */
 
 #include <Wire.h>
@@ -44,8 +53,8 @@ const int LED_2 = 13;   // PB5 // SCK
 ///////////////////////////////////////////////////////////////////////////////////
 // Encoder Variables
 ///////////////////////////////////////////////////////////////////////////////////
-const int Tach_1_1 = 0;  //  PDO
-const int Tach_1_2 = 1;  //  PD1
+const int Tach_1_1 = A4;  //  
+const int Tach_1_2 = A5;  //  
 const int Tach_2_1 = 2;  //  PD2
 const int Tach_2_2 = 4;  //  PD4
 const int Tach_3_1 = 7;  //  PD7
@@ -62,6 +71,9 @@ long encoder3Pos = 0;
 int encoder1PinALast = LOW;
 int encoder2PinALast = LOW;
 int encoder3PinALast = LOW;
+
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
 
 
 // I2C Protocol Variables
@@ -84,12 +96,14 @@ int LED_2_Power = 0;
 
 void setup()
 {
-  Wire.begin(0x06);                // join i2c bus with address #4
-  Wire.onRequest(requestEvent);    // Sending information back to the Pi!
-  Wire.onReceive(receiveEvent);    // Receiving Information!
+  // Wire.begin(0x06);                // join i2c bus with address #4
+  // Wire.onRequest(requestEvent);    // Sending information back to the Pi!
+  // Wire.onReceive(receiveEvent);    // Receiving Information!
+  Serial.begin(115200);
+  inputString.reserve(200);  
   
   // Initialize Analog Readings
-  analogReference(EXTERNAL);   // EXTERNAL: the voltage applied to the AREF pin (0 to 5V only) is used as the reference.
+  // analogReference(EXTERNAL);   // EXTERNAL: the voltage applied to the AREF pin (0 to 5V only) is used as the reference.
     
   // Initialize motors as outputs.
     pinMode(Motor_1_A, OUTPUT);
@@ -130,6 +144,16 @@ void loop()
   read_analog();
 }
 
+void serialEvent(){
+  while(Serial.available()){
+    char inChar = (char)Serial.read();
+    inputString += inChar;
+    if(inChar == '\n'){
+      parse_string_data();
+    }
+  }
+}
+
 // Fill array
 // Converts long to bytes
 void fill_encoder_array(long in){
@@ -139,84 +163,50 @@ void fill_encoder_array(long in){
   data_send[0] = (in >> 24) & 0xFF;
 }
 
-// function that executes whenever data is received from master
-// this function is registered as an event, see setup()
-void receiveEvent(int howMany)
-{
-  int i = 0;
-  while(Wire.available()) // loop through all but the last
-  {
-    data_request = Wire.read();          // receive byte as an integer
-    data_requested[i] = data_request;       // Position 1 in array is the data requested by NXT. 
-    // Rest is a lat/lon coordinate number.  Should not be converted to anything.
-    i++;
+void parse_string_data(){
+  Serial.print(inputString[0]);  
+  switch(inputString[0]){
+    case '0':
+      break;
+    case '1':       // Motor Power 1 - 3
+      motor_power[0] = (char)inputString[1];
+      motor_power[1] = (char)inputString[2];
+      motor_power[2] = (char)inputString[3];
+      break;
+      
+    case '4':
+      Serial.println(encoder1Pos);
+      
+      break;
+      
+    case '5':
+      Serial.println(encoder2Pos);
+      break;
+
+    case '6':
+      Serial.println(encoder3Pos);      
+      break;
+    
+    case '7':                                  // Lattitude
+      LED_1_Power = inputString[1] - 48;
+      LED_2_Power = inputString[2] - 48;    
+      break;    
+    
+    case '8':
+      Serial.write(analog_values[0]);
+      Serial.write(analog_values[1]);
+      Serial.write(analog_values[2]);
+      Serial.write(analog_values[3]);
+      break;  
+    
+    default:
+      // LED_1_Power = 0x00;
+      // do nothing
+      break;
   }
-  //int x = Wire.read();    // receive byte as an integer
-  //Serial.println(x);         // print the integer
-  switch(data_requested[0]){  
-      case 0 :                                  
-        break;
-      case 0x01 :                                  // Motor Power 1 - 3
-        motor_power[0] = data_requested[1];
-        motor_power[1] = data_requested[2];
-        motor_power[2] = data_requested[3];
-        byte_send = 0;
-        break;  
-      case 0x02 :                                  // Motor Power 2
-        // Not used
-        break;
-      case 0x03 :                                  // Motor Power 3
-        // Not used
-        break;      
-      
-      case 0x04 :
-        fill_encoder_array(encoder1Pos);
-        byte_send = 4;      
-        break;
-        
-      case 0x05 :
-        fill_encoder_array(encoder2Pos); 
-        byte_send = 4; 
-        break;
 
-      case 0x06 :
-        fill_encoder_array(encoder3Pos);        
-        byte_send = 4;         
-        break;
-      
-      case 0x0C :                                  // Lattitude
-        LED_1_Power = data_requested[1];
-        LED_2_Power = data_requested[2];
-        byte_send = 0;
-        break;    
-      
-      case 0x0D :
-        data_send[0] = analog_values[0];
-        data_send[1] = analog_values[1];
-        data_send[2] = analog_values[2];
-        data_send[3] = analog_values[3];
-        byte_send = 4;
-        break;  
-      
-      default:
-        // LED_1_Power = 0x00;
-        // do nothing
-        break;
-        
-  }  
-  
-}
-
-// function that executes whenever data is requested by master
-// this function is registered as an event, see setup()
-void requestEvent(){
-  // Wire.write(data_send, byte_send);            //  Simple, short, and ready to go.  Fast.  Smooth.  Clean.
-                                              // Adding anything else to this call will stop the I2C while it waits.
-  // Wire.write(data_send, 4);
-  byte_send = 4;
-  Wire.write(data_send, byte_send);
-  memset(data_requested, ' ', sizeof(data_requested));                              // Cleanout indices
-  memset(data_send, 0, sizeof(data_send));
+  stringComplete = false;   
+  inputString = "";
 }
 
 // Sets the power of the LED
