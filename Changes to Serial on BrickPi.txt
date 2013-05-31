@@ -2,5 +2,9 @@ To get the serial module run this command on Raspbian: sudo apt-get install pyth
 
 Changes to use the Serial Port
 
+<<<<<<< HEAD
 http://www.hobbytronics.co.uk/raspberry-pi-serial-port
+=======
+http://www.hobbytronics.co.uk/raspberry-pi-serial-port - Ignore the "Disable Bootup Info" section
+>>>>>>> 11189cf05349cbd5c17b21bcf4356ed2ba6d25fb
 http://www.irrational.net/2012/04/19/using-the-raspberry-pis-serial-port/
