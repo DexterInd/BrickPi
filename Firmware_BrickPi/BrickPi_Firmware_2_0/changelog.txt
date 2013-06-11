@@ -1,0 +1,18 @@
+Note:  all these changes match with changes i made to BrickPi2.py in the python library
+
+1.  slightly changed serialEvent behavior (no change in functionality, it was just my preference)
+
+2.  deleted first line of parse_string data():  Serial.print(inputString[0]) to fix BrickPi2.ReadAnalog() values coming out of order
+
+3.  changed case 7 of parse_string_data() to check for byte value when setting LEDs to fix issue of LEDs not turning off
+
+4.  added case 9 of switch in parse_string_data() to match new BrickPi2.SetAllMotors(motor_power)
+
+5.  Changed multiplier set_motor_power() from 2 to 2.55 to achieve the full 0-255 of analogWrite
+
+6.  added case statement at beginning of parse_string_data() to handle "startup character" that caused problems the first time BrickPi2.ReadAnalog() or BrickPi2.SetMotor() were called
+
+7.  changed case 1 of parse_string_data() to match change in BrickPi2.SetMotor() from form SetMotor(power1,power2,power3) to SetMotor(motor_number, motor_power)
+
+
+
