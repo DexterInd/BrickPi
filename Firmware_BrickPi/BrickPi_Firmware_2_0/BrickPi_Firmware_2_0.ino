@@ -86,14 +86,16 @@ int byte_send = 0;
 //////////////////////////////////////////////////////
 // I2C Registers and Data
 //////////////////////////////////////////////////////
-int motor_num= 0;     //used for setting individual motors
-String firstRun= "";  //used to deal with python startup character
 int motor_power[3] = {0,0,0};
 long encoder_values[3] = {0,0,0};
 unsigned int analog_values[4] = {0,0,0,0};
 long motor_speed[3] = {0,0,0};    // To be implemented at a later time.
 int LED_1_Power = 0;     // Power of the LED
 int LED_2_Power = 0;
+
+int motor_num= 0;     //used for setting individual motors
+String firstRun= "";  //used to deal with python startup character
+
 
 void setup()
 {
@@ -139,11 +141,6 @@ void setup()
 
 void loop()
 {
-   if(stringComplete) {
-     parse_string_data();
-     inputString= "";
-     stringComplete= false;
-  }
   pin_count();        // Update encoder variables.
   set_motor_power();  // Update the motor powers.
   set_LEDs();
@@ -155,8 +152,7 @@ void serialEvent(){
     char inChar = (char)Serial.read();
     inputString += inChar;
     if(inChar == '\n'){
-      //parse_string_data();
-      stringComplete= true;
+      parse_string_data();
     }
   }
 }
@@ -171,7 +167,7 @@ void fill_encoder_array(long in){
 }
 
 void parse_string_data(){
-  //Ignore character sent at startup of python
+  //deals with "startup character" sent by python
   if(inputString[0]=='\xf8') {        
     for(int i=1; i< inputString.length(); i++) {
       firstRun+= inputString[i];
@@ -179,34 +175,39 @@ void parse_string_data(){
     inputString= firstRun;
     firstRun="";
   }
-  //Choose mode based on first character sent by python
+  //Choose mode based on first character sent by python function
   switch(inputString[0]){
     case '0':
       break;
     case '1':                               // Motor Power 1 - 3
       motor_num= (char)inputString[1];
       motor_power[motor_num]= (char)inputString[2];
+      Serial.print(1);
       break;
       
     case '4':
+      Serial.print(1);
       Serial.println(encoder1Pos);
-      
       break;
       
     case '5':
+      Serial.print(1);
       Serial.println(encoder2Pos);
       break;
 
     case '6':
+      Serial.print(1);
       Serial.println(encoder3Pos);      
       break;
     
     case '7':
       if(inputString[1]=='\x01') LED_1_Power= 1; else LED_1_Power= 0;
       if(inputString[2]=='\x01') LED_2_Power= 1; else LED_2_Power= 0;
+      Serial.print(1);
       break;    
     
     case '8':
+      Serial.print(1);
       Serial.write(analog_values[0]);
       Serial.write(analog_values[1]);
       Serial.write(analog_values[2]);
@@ -217,15 +218,14 @@ void parse_string_data(){
       motor_power[0] = (char)inputString[1];
       motor_power[1] = (char)inputString[1];
       motor_power[2] = (char)inputString[1];
+      Serial.print(1);
     
     default:
       // LED_1_Power = 0x00;
       // do nothing
       break;
   }
-
-//  stringComplete = false;   
- // inputString = "";
+  inputString = "";
 }
 
 // Sets the power of the LED
