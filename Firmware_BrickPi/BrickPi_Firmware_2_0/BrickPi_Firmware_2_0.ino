@@ -86,13 +86,16 @@ int byte_send = 0;
 //////////////////////////////////////////////////////
 // I2C Registers and Data
 //////////////////////////////////////////////////////
-
 int motor_power[3] = {0,0,0};
 long encoder_values[3] = {0,0,0};
 unsigned int analog_values[4] = {0,0,0,0};
 long motor_speed[3] = {0,0,0};    // To be implemented at a later time.
 int LED_1_Power = 0;     // Power of the LED
 int LED_2_Power = 0;
+
+int motor_num= 0;     //used for setting individual motors
+String firstRun= "";  //used to deal with python startup character
+
 
 void setup()
 {
@@ -164,48 +167,64 @@ void fill_encoder_array(long in){
 }
 
 void parse_string_data(){
-  Serial.print(inputString[0]);  
+  //deals with "startup character" sent by python
+  if(inputString[0]=='\xf8') {        
+    for(int i=1; i< inputString.length(); i++) {
+      firstRun+= inputString[i];
+    }
+    inputString= firstRun;
+    firstRun="";
+  }
+  //Choose mode based on first character sent by python function
   switch(inputString[0]){
     case '0':
       break;
-    case '1':       // Motor Power 1 - 3
-      motor_power[0] = (char)inputString[1];
-      motor_power[1] = (char)inputString[2];
-      motor_power[2] = (char)inputString[3];
+    case '1':                               // Motor Power 1 - 3
+      motor_num= (char)inputString[1];
+      motor_power[motor_num]= (char)inputString[2];
+      Serial.print(1);
       break;
       
     case '4':
+      Serial.print(1);
       Serial.println(encoder1Pos);
-      
       break;
       
     case '5':
+      Serial.print(1);
       Serial.println(encoder2Pos);
       break;
 
     case '6':
+      Serial.print(1);
       Serial.println(encoder3Pos);      
       break;
     
-    case '7':                                  // Lattitude
-      LED_1_Power = inputString[1] - 48;
-      LED_2_Power = inputString[2] - 48;    
+    case '7':
+      if(inputString[1]=='\x01') LED_1_Power= 1; else LED_1_Power= 0;
+      if(inputString[2]=='\x01') LED_2_Power= 1; else LED_2_Power= 0;
+      Serial.print(1);
       break;    
     
     case '8':
+      Serial.print(1);
       Serial.write(analog_values[0]);
       Serial.write(analog_values[1]);
       Serial.write(analog_values[2]);
       Serial.write(analog_values[3]);
       break;  
     
+    case '9':
+      motor_power[0] = (char)inputString[1];
+      motor_power[1] = (char)inputString[1];
+      motor_power[2] = (char)inputString[1];
+      Serial.print(1);
+    
     default:
       // LED_1_Power = 0x00;
       // do nothing
       break;
   }
-
-  stringComplete = false;   
   inputString = "";
 }
 
@@ -223,29 +242,29 @@ void set_motor_power(){
     
     // Motor 1    
     if(motor_power[0] >=0){
-      analogWrite(Motor_1_A, (motor_power[0]*2)); 
+      analogWrite(Motor_1_A, (motor_power[0]*2.55)); 
       analogWrite(Motor_1_B, 0);
     } else {
       analogWrite(Motor_1_A, 0); 
-      analogWrite(Motor_1_B, (motor_power[0]*-2));
+      analogWrite(Motor_1_B, (motor_power[0]*-2.55));
     }
     
     // Motor 2
     if(motor_power[1] >=0) {
-      analogWrite(Motor_2_A, (motor_power[1]*2)); 
+      analogWrite(Motor_2_A, (motor_power[1]*2.55)); 
       analogWrite(Motor_2_B, 0);
     } else {
       analogWrite(Motor_2_A, 0); 
-      analogWrite(Motor_2_B, (motor_power[1]*-2));
+      analogWrite(Motor_2_B, (motor_power[1]*-2.55));
     };
     
     // Motor 3
     if(motor_power[2] >=0) {
-      analogWrite(Motor_3_A, (motor_power[2]*2)); 
+      analogWrite(Motor_3_A, (motor_power[2]*2.55)); 
       analogWrite(Motor_3_B, 0);
     } else {
       analogWrite(Motor_3_A, 0); 
-      analogWrite(Motor_3_B, (motor_power[2]*-2));
+      analogWrite(Motor_3_B, (motor_power[2]*-2.55));
     };
 }
 
