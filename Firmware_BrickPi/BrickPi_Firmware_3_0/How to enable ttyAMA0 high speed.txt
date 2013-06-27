@@ -1,0 +1,11 @@
+open > /boot/config.txt
+
+create/change line:
+init_uart_clock=16000000
+or
+init_uart_clock=32000000
+or something else.
+Default is said to be equivilant to
+init_uart_clock=3000000
+
+The UART requires that the clock be 16+ times the desired speed. In order to get 1MB, it needs to be 16M, and 2MB, 32M.

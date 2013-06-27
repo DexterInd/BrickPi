@@ -1,0 +1,7 @@
+https://projects.drogon.net/raspberry-pi/wiringpi/i2c-library/
+
+Install:
+	sudo apt-get install libi2c-dev
+
+Load and optionally set speed (in k baud):
+	gpio load i2c 10
