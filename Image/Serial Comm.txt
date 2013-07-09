@@ -1,0 +1,1 @@
+http://blog.oscarliang.net/raspberry-pi-and-arduino-connected-serial-gpio/

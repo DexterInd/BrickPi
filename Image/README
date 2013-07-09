@@ -1,0 +1,20 @@
+BrickPi Image
+Last Modified - 2013.07.09
+Dexter Industries
+
+____________________________________________________________________________________________________
+
+This is our own custom version image for the BrickPi.  It's a modified "Wheezy" with a few changes:
+
+This version is setup to:
+	- Boot to desktop.
+	- Accept a US keyboard (GO USA!)
+	- SSH Enabled with default login (pi, raspberry)
+	- VNC Login on Port 1, password raspberr
+	- Auto connect for wlan 
+	- Auto static IP
+	
+Most importantly to note, for the Raspberry Pi to communicate with the BrickPi, the following changes have been made to Wheezy:
+	- A modified version of Wiring Pi is installed.
+	- The UART clock speed is set to init_uart_clock=32000000
+	- Serial and I2C is enabled.
