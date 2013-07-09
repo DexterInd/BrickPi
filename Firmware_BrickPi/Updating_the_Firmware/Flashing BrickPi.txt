@@ -1,0 +1,16 @@
+
+FLASHING THE FIRMWARE ON BRICK PI
+---------------------------------
+
+Setup Github on your computer and clone the repository from https://github.com/mattallen37/BrickPiDev
+Once done, Open up the file Documents\GitHub\BrickPiDev\firmware\BrickPiFW_Compressed_Communication\BrickPiFW_Compressed_Communication.ino in Arduino
+You'll need to import the libraries before compiling. 
+Just go to Sketch>Import Library>Add Library and select all folders from BrickPiDev\firmware\ one by one.
+When you've imported all of them, you'll see a new list 'Conrtributed' under the Import Library menu.
+It should contain all these folders: BrickPiA, BrickPiCS, BrickPiI2C, BrickPiM, BrickPiUART, BrickPiUS
+Now open up File>Preferences and check "Show verbose output during : compilation"
+Hit ok and try to compile the code. The last line of the compiler will show the path to a .hex file.
+Copy the .hex file to a working directory contaiing the firmware loading package
+Now follow the instructions for flashing(available at __ ) and program the microcontrollers
+Now remove power from the BrickPi and assemble the BrickPi on top of Raspberry Pi
+
