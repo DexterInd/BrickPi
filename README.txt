@@ -1,7 +1,7 @@
 This project combines the brains of a Raspberry Pi with the brawn of a LEGO MINDSTORMS NXT.  Read more about it here:  http://www.dexterindustries.com/BrickPi
 
 This repository only holds firmware and hardware designs.  
-	* If you're looking for our BrickPi Python libraries, look here: https://github.com/DexterInd/BrickPi_Python
+	* If you're looking for our BrickPi Python libraries, look here:	https://github.com/DexterInd/BrickPi_Python
 	* If you're looking for the BrickPi C Libraries, look here: 		https://github.com/DexterInd/BrickPi_C
 	* If you're looking for the BrickPi Scratch libraries, look here:	https://github.com/DexterInd/BrickPi_Scratch
 
