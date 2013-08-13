@@ -5,6 +5,11 @@ This project combines the brains of a Raspberry Pi with the brawn of a LEGO MIND
 
 These files have been made available online through a [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/) license.
 
+## Getting Started
+
+We've devoted some serious time to trying to make sure that it's easy to get started.  If you're lost, we would like to first direct you to our [website for the BrickPi] (http://www.dexterindustries.com/BrickPi/)
+
+
 ## This Repository
 
 This repository only holds firmware and hardware designs.  
@@ -21,5 +26,5 @@ The board firmware is made in Arduino in order to make it super-hackable.  The f
 
 The board supports LEGO NXT motors and LEGO NXT sensors, as well as many of Dexter Industries sensors for LEGO Mindstorms.
 
-Dexter Industries
-http://www.dexterindustries.com/BrickPi (http://www.dexterindustries.com/BrickPi)
+[Dexter Industries] (http://www.dexterindustries.com/)
+[http://www.dexterindustries.com/BrickPi] (http://www.dexterindustries.com/BrickPi)
