@@ -13,9 +13,9 @@ We've devoted some serious time to trying to make sure that it's easy to get sta
 ## This Repository
 
 This repository only holds firmware and hardware designs.  
-	* If you're looking for our BrickPi Python libraries, look here:	https://github.com/DexterInd/BrickPi_Python
-	* If you're looking for the BrickPi C Libraries, look here: 		https://github.com/DexterInd/BrickPi_C
-	* If you're looking for the BrickPi Scratch libraries, look here:	https://github.com/DexterInd/BrickPi_Scratch
+	**Python** - If you're looking for our BrickPi Python libraries, look here:	https://github.com/DexterInd/BrickPi_Python
+	**C** - If you're looking for the BrickPi C Libraries, look here: 		https://github.com/DexterInd/BrickPi_C
+	**Scratch** - If you're looking for the BrickPi Scratch libraries, look here:	https://github.com/DexterInd/BrickPi_Scratch
 
 ## Image for the SD Card
 Our custom image for the Raspberry Pi makes using the BrickPi easy.  We've modified wheezy a little bit.  You can download the latest image here:
