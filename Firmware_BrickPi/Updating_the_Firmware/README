@@ -1,6 +1,11 @@
+We have a step-by-step version of this on our website here:
+
+http://www.dexterindustries.com/BrickPi/design/firmware-documentation/flash-new-firmware/
+
+
 Before you Begin:
 
-- We have the latst version of the firmware compiled in this directory (the .hex file), for your convenience.
+- We have the latest version of the firmware compiled in this directory (the .hex file), for your convenience.
 - Make sure avrdude is installed on your computer.  Preferably installed in the PATH keywords so you can operate avrdude out of any directory.
 - Install ArduinoISP Sketch on your Arduino.
 - Connect D10 to the appropriate reset line on the BrickPi.
@@ -13,3 +18,4 @@ Steps:
 	- Update the .BAT file with the appropriate COM#.
 	- Begin the .BAT file operation.
 	- You will need to press return after each sequence (there are 6 sequences: 3 fuse writes, two memory writes, and one eeprom write).
+	
