@@ -1,0 +1,16 @@
+auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+auto wlan0
+allow-hotplug wlan0
+
+iface wlan0 inet static
+	address 192.168.1.123
+	netmask 255.255.255.0
+	network 192.168.1.1
+	broadcast 255.255.255.255
+	gateway 192.168.1.1
+	wpa-ssid "SSID"
+	wpa-psk "PASSWORD"
