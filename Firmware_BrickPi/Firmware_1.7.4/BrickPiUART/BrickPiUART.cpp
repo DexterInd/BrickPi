@@ -3,7 +3,7 @@
 *  matthewrichardson37<at>gmail.com
 *  http://mattallen37.wordpress.com/
 *  Initial date: June 1, 2013
-*  Last updated: June 8, 2013
+*  Last updated: Aug. 7, 2013
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *
@@ -65,7 +65,8 @@ void UART_Set_Addr(uint8_t NewAddr){
 
 
 bool UART_Setup(uint32_t speed){
-  Serial.begin(speed);  
+  UART_BAUD_RATE = speed;
+  Serial.begin(UART_BAUD_RATE);  
   return UART_Get_Addr();
 }
 
@@ -90,7 +91,7 @@ void UART_WriteArray(byte ByteCount, byte * OutArray){
   Serial.write(UART_FULL_ARRAY, (byte)(ByteCount + 2));
 }
 
-int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){
+int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){          // timeout in mS, not uS
 
   long OrigionalTick = millis();
   while(!(Serial.available())){                                                // Wait until data has been received
@@ -98,9 +99,10 @@ int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){
   }
   
   byte DataAvailable = 0;
-  while(DataAvailable < Serial.available()){                                   // If it's been 1 ms since the last data was received, assume it's the end of the message.
+  while(DataAvailable < Serial.available()){                                   // If it's been <<<2 times a single byte time>>> since the last data was received, assume it's the end of the message.
     DataAvailable = Serial.available();
-    delayMicroseconds(50);
+    uint32_t delayMicrosecondsTime = (((1000000 * 10) / UART_BAUD_RATE) * 2);
+    delayMicroseconds(delayMicrosecondsTime);
   }
   
   if(DataAvailable < 3){                                                       // Not even the entire header was received.
@@ -131,10 +133,10 @@ int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){
     UART_CKSM &= 0xFF;
     
     if(Checksum != UART_CKSM){
-      Serial.print("Checksum received: ");
+/*      Serial.print("Checksum received: ");
       Serial.print(Checksum);
       Serial.print("   Checksum computed: ");
-      Serial.println(UART_CKSM);
+      Serial.println(UART_CKSM);*/
       return -5;
     }
     

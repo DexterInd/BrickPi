@@ -3,7 +3,7 @@
 *  matthewrichardson37<at>gmail.com
 *  http://mattallen37.wordpress.com/
 *  Initial date: June 1, 2013
-*  Last updated: June 18, 2013
+*  Last updated: Aug 24, 2013
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *
@@ -33,28 +33,15 @@ uint16_t A_ReadRaw(uint8_t port){
 }
 
 uint16_t A_ReadRawCh(uint8_t channel){
-  if(channel > 7)
-    return 0;
+  if(channel > 7)              // If it's not a valid channel
+    return 0;                  //   return 0
 
-	uint8_t low, high;
-
-  // Set the analog multiplexer channel
-	ADMUX = (channel & 0x07);
-
-	// start the conversion
-	ADCSRA |= (1 << ADSC);
-
-	// ADSC is cleared when the conversion finishes
-	while(ADCSRA & (1 << ADSC));
-
-	// we have to read ADCL first; doing so locks both ADCL
-	// and ADCH until ADCH is read.  reading ADCL second would
-	// cause the results of each conversion to be discarded,
-	// as ADCL and ADCH would be locked when it completed.
-	low  = ADCL;
-	high = ADCH;
-
-	return (high << 8) | low;
+	ADMUX = (channel & 0x07);    // Specify which channel to read
+  ADCSRA |= (1 << ADSC);       // Begin converting
+	while(ADCSRA & (1 << ADSC)); // Wait until ADSC is cleared (the conversion is complete)
+	uint8_t low  = ADCL;         // Read ADCL first, so that SDCH gets locked
+	uint8_t high = ADCH;
+	return (high << 8) | low;    // Return the combined values of ADCL and ADCH
 }
 
 uint8_t A_Config(uint8_t port, uint8_t states){
@@ -80,7 +67,7 @@ uint8_t A_SetD1(uint8_t port, uint8_t mode, uint8_t state){
 }
 
 uint8_t A_Set9V(uint8_t port, uint8_t state){
-  DDRD |= (0x40 << port);             // Set PD6/PD7 as output
+  DDRD |= (0x40 << port);              // Set PD6/PD7 as output
   if(state) PORTD |=  (0x40 << port);  // Set PD6/PD7 high  
   else      PORTD &= ~(0x40 << port);  // Set PD6/PD7 low
 }
