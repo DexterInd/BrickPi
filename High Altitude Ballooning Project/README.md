@@ -1,8 +1,6 @@
 BrickPi High Altitude Ballooning Project
 =====
-weather_balloon_picture.jpg
 ![high altitude balloon](https://raw.github.com/DexterInd/BrickPi/master/High%20Altitude%20Ballooning%20Project/weather_balloon_picture.jpg "High Altitude Ballooning.")
-
 
 The goal of this project is to launch a high altitude balloon with the BrickPi as cargo.  You can see more about it on our website in the [Space Program](http://www.dexterindustries.com/BrickPi/design/space-program/) section.
 
@@ -14,13 +12,18 @@ We will be carrying the following instruments:
 * Raspberry Pi Camera
 * dPressure
 * dGPS
+* dThermal Open
 
 We want to take the following data:
 * A picture every 10 seconds.
 * A pressure reading every 10 seconds.
-* A GPS reading every 10 seconds.
+* A GPS reading every 60 seconds.
+* A temperature reading every 60 seconds. 
 
-We will use Python for all data.
+Remember to [enable camera!](http://www.raspberrypi.org/camera)
+We will use Python for all data.  The program will be a simple data-collection program.
+We need to have the program run on startup so if there's a power interruption, the program reliably restarts.
+We need to conserve power, as much as possible.  
 
 ## More Information
 
