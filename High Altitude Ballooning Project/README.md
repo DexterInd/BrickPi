@@ -1,5 +1,8 @@
 BrickPi High Altitude Ballooning Project
 =====
+weather_balloon_picture.jpg
+![high altitude balloon](https://raw.github.com/DexterInd/BrickPi/master/High%20Altitude%20Ballooning%20Project/weather_balloon_picture.jpg "High Altitude Ballooning.")
+
 
 The goal of this project is to launch a high altitude balloon with the BrickPi as cargo.  You can see more about it on our website in the [Space Program](http://www.dexterindustries.com/BrickPi/design/space-program/) section.
 
