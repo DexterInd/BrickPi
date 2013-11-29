@@ -4,7 +4,7 @@
 # http://www.dexterindustries.com/
 # This code is for the ballon project!  Yeehaw!
 
-# Make sure this runs on startup:  added ballonscript to rc.local
+# Make sure this runs on startup:  use "sudo crontab -e" to modify startup method.
 
 # Update the time from the dGPS.  Use it to record the time of all data taken.
 # Port 1: dPressure
@@ -19,6 +19,8 @@ import re
 from BrickPi import *
 import math
 import os
+
+dir_var = "/media/DiskGO_/"
 
 #Thermometer Variables
 ############################################################################
@@ -153,20 +155,25 @@ def increment_picture():
 	return increment
 
 def write_data(data_to_write):
-	file_name = "/home/pi/data.csv"
+	file_name = dir_var+"data.csv"
 	with open(file_name, 'a') as data:
 		data.write(data_to_write)
 		data.write("\n")
 
+def write_debug_log(data_to_write):
+	file_name = dir_var+"debug.txt"
+	with open(file_name, 'a') as data:
+		data.write(data_to_write)
+		data.write("\n")
 
 picture_increment = 0
 while True:
 	
 	var_time = str(read_time())
 	var_increment = str(increment_picture())
-	directory_var = "/media/DiskGO_/"
+	directory_var = dir_var
 	file_name_var = directory_var+var_increment+"_"+var_time+".jpg"
-	command_var = "raspistill -o "+file_name_var
+	command_var = "raspistill -o "+file_name_var + " -t 10 -n"
 	subprocess.call(command_var, shell=True)
 	
 	var_lat = str(read_lat())
@@ -186,14 +193,17 @@ while True:
 	c = ", "
 	data_string = var_increment+c+var_time+c+var_lat+c+var_lon+c+var_vel+c+var_pressure+c+var_temp
 	write_data(data_string)
-	print "Image taken"
+	write_debug_log("Image taken "+file_name_var)
 
 	file_exists = os.path.exists(file_name_var)
-	reboot_command = "sudo reboot"
+	reboot_command = "" #"sudo reboot"
 	if file_exists:
 		print "Found File!"
+		write_debug_log("Found File")
 	else:
 		print "File not found! Rebooting!"
-		subprocess.call(reboot_command, shell=True)		
+		write_debug_log("File not found!  Rebooting!")
+		write_debug_log(var_time)
+		#subprocess.call(reboot_command, shell=True)		
 
 	time.sleep(10)
