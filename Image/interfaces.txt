@@ -7,5 +7,5 @@ allow-hotplug wlan0
 auto wlan0
 
 iface wlan0 inet dhcp
-        wpa-ssid "BSNLMYL2"
-        wpa-psk "usa87577"
+        wpa-ssid "SSID"
+        wpa-psk "PSK"
