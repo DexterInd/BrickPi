@@ -35,12 +35,18 @@ fi
 echo " "
 echo "Installing Dependencies"
 echo "======================="
+sudo apt-get dist-upgrade
 sudo apt-get install python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus
 echo "Dependencies installed"
 
-git clone git://git.drogon.net/wiringPi
+#git clone git://git.drogon.net/wiringPi
+#cd wiringPi
+#./build
+sudo unzip wiringPi.zip
 cd wiringPi
-./build
+sudo chmod 777 build
+sudo ./build
+cd ..
 echo "wiringPi Installed"
 
 echo " "
@@ -109,9 +115,9 @@ git clone https://github.com/pilliq/scratchpy.git
 cd scratchpy
 sudo make install
 
+sudo python setup.py install
 echo " "
 echo "Restarting"
-
 echo "3"
 sleep 1
 echo "2"
