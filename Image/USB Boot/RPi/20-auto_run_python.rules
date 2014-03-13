@@ -1,0 +1,2 @@
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ACTION=="add", RUN="/home/pi/Desktop/usb_script/mount_usb.sh"
+KERNEL=="sd[a-z]", SUBSYSTEM=="block", ACTION=="remove", RUN="/home/pi/Desktop/usb_script/unmount_usb.sh"
