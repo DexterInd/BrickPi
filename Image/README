@@ -1,12 +1,11 @@
 BrickPi Image
-Last Modified - 2013.08.14
 Dexter Industries
 
 ____________________________________________________________________________________________________
 
-Download the latest version of the image here:  https://docs.google.com/file/d/0B0WChwP4CnLBMVNKajMydy1VcVU/edit?usp=sharing
+Download the latest version of the image here:  http://sourceforge.net/projects/dexterindustriesraspbianflavor/
 
-This is our own custom version image for the BrickPi.  It's a modified "Wheezy" with a few changes:
+This is our own custom version image for the BrickPi.  It's a modified Raspbian image with a few changes:
 
 This version is setup to:
 	- Boot to desktop.
@@ -14,7 +13,7 @@ This version is setup to:
 	- SSH Enabled with default login (pi, raspberry)
 	- VNC Login on Port 1, password raspberr
 	- Auto connect for wlan 
-	- Auto static IP
+	- Automatically connect over ethernet or wifi to the ip address "raspberrypi.local"
 	
 Most importantly to note, for the Raspberry Pi to communicate with the BrickPi, the following changes have been made to Wheezy:
 	- A modified version of Wiring Pi is installed.
