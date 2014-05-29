@@ -1,4 +1,4 @@
-##  INTRODUCTION:
+## INTRODUCTION:
 This script allows you to run a python program called ";**;program.py**&&quot; just by copying the programfile on to a USB stick and connecting it to the Raspberry Pi.
 
 ## USAGE:
@@ -15,21 +15,21 @@ Copy the test python program in the USB folder to the USB device. Insert the USB
 
 ### Rpi Files:
 
-•	_installinstall.sh_sh : creates the directories, changes the permissions and copies the files to their locations
+•	**install.sh**: creates the directories, changes the permissions and copies the files to their locations
 
-•	_mount_usbmount_usb.sh_sh : actions to be performed when the USB is attached, which are: find the logical id, mount it, run the program and unmount the USB
+•	**mount_usb.sh**: actions to be performed when the USB is attached, which are: find the logical id, mount it, run the program and unmount the USB
 
-•	_unmount_usbunmount_usb.sh_sh: actions to be performed when the USB is disconnected, which is to stop the python script if it was in an infinte loop or didn't complete when the USB derive was connected(this is here mainly because the python program is being run from the memory and even if the USB device is removed it keeps on running)
+•	**unmount_usb.sh**: actions to be performed when the USB is disconnected, which is to stop the python script if it was in an infinte loop or didn't complete when the USB derive was connected(this is here mainly because the python program is being run from the memory and even if the USB device is removed it keeps on running)
 
-•	_2020-auto_run_python.rules_rules: this is a rules file which runs the script when the USB is connected and disconnected
+•	**2020-auto_run_python.rules**: this is a rules file which runs the script when the USB is connected and disconnected
 
 ###USB FIles:
-•	_programprogram.py_py: program to be run from the USB. Example is a hello world in a loop of 10 iterations
+•	**program.py**: program to be run from the USB. Example is a hello world in a loop of 10 iterations
 
-###FilesFile created:
-•	_outputoutput.txt_txt: this stores the console output from the program. This sometimes fails when the program has an infinite loop because the file is open for writing and the USB is removed before closing the file which corrupts the file. 
+###Files created:
+•	**output.txt**: this stores the console output from the program. This sometimes fails when the program has an infinite loop because the file is open for writing and the USB is removed before closing the file which corrupts the file. 
 
-•	_errorerror.txt_txt: this contains the errors if any that were generated when trying to run the python program.
+•	**error.txt**: this contains the errors if any that were generated when trying to run the python program.
 
 ###Troubleshooting:
 •	Make sure that the USB drive is a FAT32 file system and not NTFS or any other file system.
