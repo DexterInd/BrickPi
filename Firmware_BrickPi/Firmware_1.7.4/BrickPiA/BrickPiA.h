@@ -3,7 +3,7 @@
 *  matthewrichardson37<at>gmail.com
 *  http://mattallen37.wordpress.com/
 *  Initial date: June 1, 2013
-*  Last updated: Aug 24, 2013
+*  Last updated: June 18, 2013
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *

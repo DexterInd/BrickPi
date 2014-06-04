@@ -3,7 +3,7 @@
  *  matthewrichardson37<at>gmail.com
  *  http://mattallen37.wordpress.com/
  *  Initial date: June 1, 2013
- *  Last updated: Aug. 7, 2013
+ *  Last updated: July 2, 2013
  *
  *  You may use this code as you wish, provided you give credit where it's due.
  *
@@ -116,7 +116,6 @@
   #define MSG_TYPE_VALUES           3 // Set the motor speed and direction, and return the sesnors and encoders.
   #define MSG_TYPE_E_STOP           4 // Float motors immidately
   #define MSG_TYPE_TIMEOUT_SETTINGS 5 // Set the timeout
-  #define MSG_TYPE_BAUD_SETTINGS    6 // Set the baud rate
 
 // RPi to BrickPi
   
@@ -129,9 +128,6 @@
   
   // Timeout setup (MSG_TYPE_TIMEOUT_SETTINGS)
     #define BYTE_TIMEOUT 1
-  
-  // Baud setup (MSG_TYPE_BAUD_SETTINGS)
-    #define BYTE_BAUD 1   // 1 - 4
 
 //#define TYPE_SENSOR_RAW                0 // - 31
 #define TYPE_SENSOR_LIGHT_OFF          0
@@ -154,7 +150,7 @@
 unsigned long COMM_TIMEOUT = 250; // How many ms since the last communication, before timing out (and floating the motors).
 
 void setup(){
-  UART_Setup(9600);
+  UART_Setup(500000);
   M_Setup();
   A_Setup();
 }
@@ -182,7 +178,11 @@ unsigned long LastUpdate;
 
 void loop(){   
   Result = UART_ReadArray(Bytes, Array, 1);
-
+  
+/*  if(Result != (-2)){
+    Serial.write(Result);
+  }*/
+  
   if(Result == 0){
     LastUpdate = millis();
     if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){
@@ -198,14 +198,6 @@ void loop(){
         }
       }
       SetupSensors();                                 // Change PORT_1 settings back
-    }
-    else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_BAUD_SETTINGS && Bytes == 4){
-      unsigned long baud = Array[BYTE_BAUD + 2];
-      baud *= 256;
-      baud += Array[BYTE_BAUD + 1];
-      baud *= 256;
-      baud += Array[BYTE_BAUD];
-      UART_Setup(baud);
     }
   }
   else if(Result == 1){
@@ -245,22 +237,10 @@ void loop(){
       Array[0] = MSG_TYPE_TIMEOUT_SETTINGS;
       UART_WriteArray(1, Array);
     }
-    else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_BAUD_SETTINGS && Bytes == 4){
-      unsigned long baud = Array[BYTE_BAUD + 2];
-      baud *= 256;
-      baud += Array[BYTE_BAUD + 1];
-      baud *= 256;
-      baud += Array[BYTE_BAUD];
-      UART_Setup(baud);
-      Array[0] = MSG_TYPE_BAUD_SETTINGS;
-      UART_WriteArray(1, Array);
-    }
   }
-  
   if(COMM_TIMEOUT && (millis() > (LastUpdate + COMM_TIMEOUT))){   // If it timed out, float the motors
     M_Float();
   }
-  
   byte i = 0;
   while(i < 2){
     if(SensorType[i] == TYPE_SENSOR_COLOR_FULL){
@@ -270,10 +250,8 @@ void loop(){
   }
 }
 
-// The bit offset for packing and unpacking bits to and from "Array"
 unsigned int Bit_Offset = 0;
 
-// Add "bits" number of bits of "value" to "Array"
 void AddBits(unsigned char byte_offset, unsigned char bit_offset, unsigned char bits, unsigned long value){
   unsigned char i = 0;
   while(i < bits){
@@ -286,7 +264,6 @@ void AddBits(unsigned char byte_offset, unsigned char bit_offset, unsigned char 
   Bit_Offset += bits;
 }
 
-// Extract "bits" number of bits from "Array"
 unsigned long GetBits(unsigned char byte_offset, unsigned char bit_offset, unsigned char bits){
   unsigned long Result = 0;
   char i = bits;
@@ -299,7 +276,6 @@ unsigned long GetBits(unsigned char byte_offset, unsigned char bit_offset, unsig
   return Result;
 }
 
-// Determine how many bits are needed to store the value
 unsigned char BitsNeeded(unsigned long value){
   unsigned char i = 0;
   while(i < 32){
@@ -311,7 +287,6 @@ unsigned char BitsNeeded(unsigned long value){
   return 31;
 }
 
-// Parse incoming settings message, and deal with it
 void ParseSensorSettings(){
   SensorType[PORT_1] = Array[BYTE_SENSOR_1_TYPE];
   SensorType[PORT_2] = Array[BYTE_SENSOR_2_TYPE];
@@ -336,7 +311,6 @@ void ParseSensorSettings(){
   }
 }
 
-// Compress data to send
 void EncodeValues(){
   for(byte Byte = 0; Byte < 128; Byte++){
     Array[Byte] = 0;
@@ -405,7 +379,6 @@ void EncodeValues(){
   Bytes = (1 + ((Bit_Offset + 7) / 8));      // How many bytes to send
 }
 
-// Parse incoming message, and deal with it
 void ParseHandleValues(){
   Bit_Offset = 0;
   
@@ -446,7 +419,6 @@ void ParseHandleValues(){
   }
 }
 
-// Configure sensors
 void SetupSensors(){
   for(byte port = 0; port < 2; port++){  
     switch(SensorType[port]){
@@ -491,7 +463,6 @@ void SetupSensors(){
   }  
 }
 
-// Read sensors
 void UpdateSensors(){
   for(byte port = 0; port < 2; port++){
     switch(SensorType[port]){

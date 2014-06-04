@@ -1,26 +1,15 @@
 /*
-* Based on Bricktronics Library -- ColorSensor.h
-* Copyright (C) 2012 Adam Wolf, Matthew Beckler, John Baichtal
+*  Matthew Richardson
+*  matthewrichardson37<at>gmail.com
+*  http://mattallen37.wordpress.com/
+*  Initial date: May 28, 2013
+*  Last updated: June 7, 2013
 *
-* The contents of this file are subject to the Mozilla Public License Version 1.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
-* Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.
+*  You may use this code as you wish, provided you give credit where it's due.
 *
-* The Original Code is from leJos.
+*  This library is specifically to be used with the BrickPi.
 *
-* The Initial Developer of the Original Code is leJos. All Rights Reserved.
-*
-* Contributor(s): Adam Wolf, Matthew Beckler, John Baichtal.''
-*
-* Most of the stuff here originated from Wayne and Layne, with one or two functions straight from leJos, an open source alternative firmware for the NXT.
-*
-* This is a library for reading the Lego Color sensor.
-*
-* This library has been modified to be used with the BrickPi by:
-*   Matthew Richardson
-*   matthewrichardson37<at>gmail.com
-*   http://mattallen37.wordpress.com/
-*   Initial date: May 28, 2013
-*   Last updated: Aug 24, 2013
+*  This is a library for reading the Lego Color sensor.
 */
 
 #include "BrickPiCS.h"
@@ -52,7 +41,7 @@ void CS_Begin(uint8_t port, uint8_t modetype)
   CS_SendMode(modetype);
   delayMicroseconds(3200);
   CS_ReadCalibration();
-  delay(120);
+  delay(120); //This can be removed if you have other setup code that doesn't use the color sensor that takes a while.
 }
 
 uint16_t CS_Values[2][4];
@@ -237,6 +226,35 @@ int CS_Calibrate()
   blank_val = (blank_val * 100) / (((SENSORMAX - MINBLANKVAL ) * 100) / ADMAX);
   cal_values[CS_PORT][BLANK_INDEX] = (blank_val * calData[CS_PORT][cal_tab][BLANK_INDEX]) >> 16 ; //TODO CHECK SHIFT    
 }
+
+/*void ColorSensor::print_color(uint8_t color)
+{
+//TODO: use PROGMEM for these strings
+    switch (color)
+    {
+    case BLACK:
+        Serial.print("black");
+        break;
+    case BLUE:
+        Serial.print("blue");
+        break;
+    case GREEN:
+        Serial.print("green");
+        break;
+    case YELLOW:
+        Serial.print("yellow");
+        break;
+    case RED:
+        Serial.print("red");
+        break;
+    case WHITE:
+        Serial.print("white");
+        break;
+    default:
+        Serial.println("error");
+    }
+}*/
+
 
 uint8_t CS_CalToColor()
 {
