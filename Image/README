@@ -9,7 +9,7 @@ This is our own custom version image for the BrickPi.  It's a modified Raspbian 
 
 This version is setup to:
 	- Boot to desktop.
-	- Accept a US keyboard (GO USA!)
+	- Accept a US keyboard (USA!)
 	- SSH Enabled with default login (pi, raspberry)
 	- VNC Login on Port 1, password raspberr
 	- Auto connect for wlan 
@@ -19,3 +19,4 @@ Most importantly to note, for the Raspberry Pi to communicate with the BrickPi, 
 	- A modified version of Wiring Pi is installed.
 	- The UART clock speed is set to init_uart_clock=32000000
 	- Serial and I2C is enabled.
+
