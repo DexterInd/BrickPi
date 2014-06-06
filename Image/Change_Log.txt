@@ -1,7 +1,7 @@
 Changes to BrickPi Image
 
 2014.06.05
-
+==========
 + Performed sudo update / sudo upgrade for latest additions.
 + Uninstalled and reinstalled BrickPi.py.  Improvements on Ultrasonic and Touch issues.
 + Installed entirely new Scratch Python script with updates to BrickPiscratch.py
@@ -17,3 +17,5 @@ Changes to BrickPi Image
 + Removed leftover wifi settings
 + Removed warning at VNC/Desktop startup LXPolKit Authentication Agent disabled.
 + Updated "Version" file on desktop
+
+MD5 Hash: 25485dd0552e4c0050e5a8f87d73dd1b
