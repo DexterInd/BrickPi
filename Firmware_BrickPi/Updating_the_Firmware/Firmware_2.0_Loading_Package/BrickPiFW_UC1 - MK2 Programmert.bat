@@ -20,11 +20,11 @@ pause
 goto start )
 
 : Write the fuses
-avrdude -P COM6 -b 19200 -c avrisp -p m328p -U lfuse:w:0xFF:m
+avrdude -P usb -c avrispmkII -p m328p -U lfuse:w:0xFF:m
 pause
-avrdude -P COM6 -b 19200 -c avrisp -p m328p -U hfuse:w:0xDA:m
+avrdude -P usb -c avrispmkII -p m328p -U hfuse:w:0xDA:m
 pause
-avrdude -P COM6 -b 19200 -c avrisp -p m328p -U efuse:w:0x05:m
+avrdude -P usb -c avrispmkII -p m328p -U efuse:w:0x05:m
 pause
 
 : Write the bootloader hex file.  Assumes it's in the same directory.
