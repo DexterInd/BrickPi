@@ -1,0 +1,17 @@
+How we reduce the image size.
+
+When changing an image around you may want to reduce the image size or cut out extra un-used space.  This is how we do it.
+
+Using Ubuntu!
+
+1.  Insert your SD Card in the Ubuntu machine.
+2.  Open GParted.  Observe the number of sectors and sector size.
+3.  In GParted, reduce the size of the active ext4 section of the SD card by at least 250 MB.  Be sure you're not reducing it past the used point of the partition.
+4.  Calculate out the size of the partitions.  In Gparted click "View --> Device Information".  
+5.  Note the number of sectors and the sector size.
+6.  Calculate out the number of sectors for the new image.  Divide the size of the final image by the sector size to get the number of sectors to copy over.
+7.  Run dd.  Be sure you pray beforehand.
+8.  sudo dd if=/dev/mmcblk0 of=~/test.img bs=512 count=7000000
+	This creates test.img in the home directory, with a sector size of 512, and a total img size of 3.5 GB from the SD card located on /dev/mmcblk0
+
+That should be it!

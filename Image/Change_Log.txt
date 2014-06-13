@@ -19,3 +19,8 @@ Changes to BrickPi Image
 + Updated "Version" file on desktop
 
 MD5 Hash: 25485dd0552e4c0050e5a8f87d73dd1b
+
+2014.06.13
+==========
++ Removed Wolfram Alpha to get some extra space.
++ Resized image to make sure it fits on a 4GB SD Card.

@@ -28,62 +28,7 @@ Go to Advanced options and enable SSH server
 Select Finish and wait till the Raspberry Pi reboots.
 Reference: http://learn.adafruit.com/adafruits-raspberry-pi-lesson-2-first-time-configuration/overview
 
-SETTING UP THE WIFI ADAPTER
----------------------------
-Open a Terminal Session by opening LXTerminal from the desktop
-Type the following command:
-	sudo nano /etc/network/interfaces
-Now, You should see the file open up in the editor.
-Change the file to look like this: 
-(Enter the ssid and password of your wifi connection)
-========================================
-auto lo
- 
-iface lo inet loopback
-iface eth0 inet dhcp
- 
-allow-hotplug wlan0
-auto wlan0
- 
-iface wlan0 inet dhcp
-        wpa-ssid "ssid"
-        wpa-psk "password"
-========================================
-When done editing, press Ctrl+X 
-You'll be asked if you want to save, Press Y
-And finally save the file in same name by pressing Return
-Now, reboot the RaspberryPi by pressing the power button from lower right corner of desktop.
 
-When the reboot is done, open LXTerminal again and enter:
-	sudo ifconfig
-Now under wlan0, you must be able to see the IP Adress, Broadcast and Mask. Note them down.
-Enter the command:
-	sudo nano /etc/network/interfaces
-Now, edit the file to use a static IP address like this
-========================================
-auto lo
- 
-iface lo inet loopback
-iface eth0 inet dhcp
- 
-allow-hotplug wlan0
-auto wlan0
- 
-iface wlan0 inet static
-		address 192.168.1.105
-		netmask 255.255.255.0
-		network 192.168.1.1
-		broadcast 255.255.255.255
-		gateway 192.168.1.1
-        wpa-ssid "ssid"
-        wpa-psk "password"
-========================================
-Enter the IP adress, broadcast and netmask as obtained before. 
-For network and gateway, just replace the last part of your IP address with 1
-
-Now save and close the file by pressing Ctrl+X, then Y and then Return.
-Reference:	http://learn.adafruit.com/adafruits-raspberry-pi-lesson-3-network-setup/setting-up-wifi-with-occidentalis
-			http://www.raspberryshake.com/raspberry-pistatic-ip-address/
 
 INSTALLING & SETTING UP VNC SERVER
 ----------------------------------
