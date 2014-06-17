@@ -2,14 +2,23 @@
  *  Matthew Richardson
  *  matthewrichardson37<at>gmail.com
  *  http://mattallen37.wordpress.com/
+ *  
+ *  Jaikrishna T S
+ *  t.s.jaikrishna<at>gmail.com
+ * 
  *  Initial date: June 1, 2013
- *  Last updated: July 2, 2013
+ *  Last updated: June 8, 2014
  *
  *  You may use this code as you wish, provided you give credit where it's due.
  *
  *  This program is specifically to be used with the BrickPi.
  *
  *  This is the BrickPi FW.
+ *
+ *  NOTE: The BrickPiM Library conflicts with the SoftwareSerial Library that is included in the BrickPiEV3 Library. 
+ *  Hence it is required to modify the default SoftwareSerial library that comes with Arduino.
+ *  To do this, open Arduino/libraries/SoftwareSerial/SoftwareSerial.h and add this line - "#undef PCINT2_vect"
+ *
  */
 
 /*
@@ -109,6 +118,8 @@
 #include "BrickPiUS.h"           // BrickPi Ultrasonic sensor library
 #include "BrickPiCS.h"           // BrickPi Color sensor library
 #include "BrickPiM.h"            // BrickPi Motor library
+#include "SoftwareSerial.h"
+#include "BrickPiEV3.h"
 
 #define BYTE_MSG_TYPE               0 // MSG_TYPE is the first byte.
   #define MSG_TYPE_CHANGE_ADDR      1 // Change the UART address.
@@ -143,6 +154,35 @@
 #define TYPE_SENSOR_COLOR_NONE         40
 #define TYPE_SENSOR_I2C                41
 #define TYPE_SENSOR_I2C_9V             42
+
+#define TYPE_SENSOR_EV3_US_M0          43
+#define TYPE_SENSOR_EV3_US_M1          44
+#define TYPE_SENSOR_EV3_US_M2          45
+#define TYPE_SENSOR_EV3_US_M3          46
+#define TYPE_SENSOR_EV3_US_M4          47
+#define TYPE_SENSOR_EV3_US_M5          48
+#define TYPE_SENSOR_EV3_US_M6          49
+
+#define TYPE_SENSOR_EV3_COLOR_M0       50
+#define TYPE_SENSOR_EV3_COLOR_M1       51
+#define TYPE_SENSOR_EV3_COLOR_M2       52
+#define TYPE_SENSOR_EV3_COLOR_M3       53
+#define TYPE_SENSOR_EV3_COLOR_M4       54
+#define TYPE_SENSOR_EV3_COLOR_M5       55
+
+#define TYPE_SENSOR_EV3_GYRO_M0        56
+#define TYPE_SENSOR_EV3_GYRO_M1        57
+#define TYPE_SENSOR_EV3_GYRO_M2        58
+#define TYPE_SENSOR_EV3_GYRO_M3        59
+#define TYPE_SENSOR_EV3_GYRO_M4        60
+
+#define TYPE_SENSOR_EV3_INFRARED_M0    61
+#define TYPE_SENSOR_EV3_INFRARED_M1    62
+#define TYPE_SENSOR_EV3_INFRARED_M2    63
+#define TYPE_SENSOR_EV3_INFRARED_M3    64
+#define TYPE_SENSOR_EV3_INFRARED_M4    65
+#define TYPE_SENSOR_EV3_INFRARED_M5    66
+
 
 #define BIT_I2C_MID  0x01  // defined for each device
 #define BIT_I2C_SAME 0x02  // defined for each device
@@ -366,6 +406,34 @@ void EncodeValues(){
           }
         }        
       break;
+      case TYPE_SENSOR_EV3_US_M0       :
+      case TYPE_SENSOR_EV3_US_M1       :
+      case TYPE_SENSOR_EV3_US_M2       :
+      case TYPE_SENSOR_EV3_US_M3       :
+      case TYPE_SENSOR_EV3_US_M4       :
+      case TYPE_SENSOR_EV3_US_M5       :
+      case TYPE_SENSOR_EV3_US_M6       :
+      case TYPE_SENSOR_EV3_COLOR_M0    :
+      case TYPE_SENSOR_EV3_COLOR_M1    :
+      case TYPE_SENSOR_EV3_COLOR_M2    :
+      case TYPE_SENSOR_EV3_COLOR_M4    :
+      case TYPE_SENSOR_EV3_COLOR_M5    :
+      case TYPE_SENSOR_EV3_GYRO_M0     :
+      case TYPE_SENSOR_EV3_GYRO_M1     :
+      case TYPE_SENSOR_EV3_GYRO_M2     :
+      case TYPE_SENSOR_EV3_GYRO_M4     :
+      case TYPE_SENSOR_EV3_INFRARED_M0 :
+      case TYPE_SENSOR_EV3_INFRARED_M1 :
+      case TYPE_SENSOR_EV3_INFRARED_M3 :
+      case TYPE_SENSOR_EV3_INFRARED_M4 :
+      case TYPE_SENSOR_EV3_INFRARED_M5 :
+        AddBits(1, 0, 16, SEN[port]);
+      break; 
+      case TYPE_SENSOR_EV3_COLOR_M3    :
+      case TYPE_SENSOR_EV3_GYRO_M3     :
+      case TYPE_SENSOR_EV3_INFRARED_M2 :
+        AddBits(1, 0, 32, SEN[port]);
+      break;
       case TYPE_SENSOR_RCX_LIGHT:
       case TYPE_SENSOR_COLOR_RED:
       case TYPE_SENSOR_COLOR_GREEN:
@@ -420,6 +488,7 @@ void ParseHandleValues(){
 }
 
 void SetupSensors(){
+  EV3_Reset();
   for(byte port = 0; port < 2; port++){  
     switch(SensorType[port]){
       case TYPE_SENSOR_TOUCH:
@@ -456,6 +525,32 @@ void SetupSensors(){
       case TYPE_SENSOR_I2C_9V:
         A_Config(port, MASK_9V);
         I2C_Setup(port, I2C_Addr[port][0], I2C_Speed[port]);
+      break;
+      case TYPE_SENSOR_EV3_US_M0       :
+      case TYPE_SENSOR_EV3_US_M1       :
+      case TYPE_SENSOR_EV3_US_M2       :
+      case TYPE_SENSOR_EV3_US_M3       :
+      case TYPE_SENSOR_EV3_US_M4       :
+      case TYPE_SENSOR_EV3_US_M5       :
+      case TYPE_SENSOR_EV3_US_M6       :
+      case TYPE_SENSOR_EV3_COLOR_M0    :
+      case TYPE_SENSOR_EV3_COLOR_M1    :
+      case TYPE_SENSOR_EV3_COLOR_M2    :
+      case TYPE_SENSOR_EV3_COLOR_M3    :
+      case TYPE_SENSOR_EV3_COLOR_M4    :
+      case TYPE_SENSOR_EV3_COLOR_M5    :
+      case TYPE_SENSOR_EV3_GYRO_M0     :
+      case TYPE_SENSOR_EV3_GYRO_M1     :
+      case TYPE_SENSOR_EV3_GYRO_M2     :
+      case TYPE_SENSOR_EV3_GYRO_M3     :
+      case TYPE_SENSOR_EV3_GYRO_M4     :
+      case TYPE_SENSOR_EV3_INFRARED_M0 :
+      case TYPE_SENSOR_EV3_INFRARED_M1 :
+      case TYPE_SENSOR_EV3_INFRARED_M2 :
+      case TYPE_SENSOR_EV3_INFRARED_M3 :
+      case TYPE_SENSOR_EV3_INFRARED_M4 :
+      case TYPE_SENSOR_EV3_INFRARED_M5 :
+        EV3_Setup(port, SensorType[port]);
       break;      
       default:
         A_Config(port, SensorType[port]);
@@ -495,6 +590,32 @@ void UpdateSensors(){
         for(byte device = 0; device < I2C_Devices[port]; device++){
           SEN[port] |= ((I2C_Transfer(port, I2C_Addr[port][device], I2C_Speed[port], (SensorSettings[port][device] & BIT_I2C_MID), I2C_Out_Bytes[port][device], I2C_Out_Array[port][device], I2C_In_Bytes[port][device], I2C_In_Array[port][device]) & 0x01) << device); // The success/failure result of the I2C transaction(s) is stored as 1 bit in SEN.
         }
+      break;
+      case TYPE_SENSOR_EV3_US_M0       :
+      case TYPE_SENSOR_EV3_US_M1       :
+      case TYPE_SENSOR_EV3_US_M2       :
+      case TYPE_SENSOR_EV3_US_M3       :
+      case TYPE_SENSOR_EV3_US_M4       :
+      case TYPE_SENSOR_EV3_US_M5       :
+      case TYPE_SENSOR_EV3_US_M6       :
+      case TYPE_SENSOR_EV3_COLOR_M0    :
+      case TYPE_SENSOR_EV3_COLOR_M1    :
+      case TYPE_SENSOR_EV3_COLOR_M2    :
+      case TYPE_SENSOR_EV3_COLOR_M3    :
+      case TYPE_SENSOR_EV3_COLOR_M4    :
+      case TYPE_SENSOR_EV3_COLOR_M5    :
+      case TYPE_SENSOR_EV3_GYRO_M0     :
+      case TYPE_SENSOR_EV3_GYRO_M1     :
+      case TYPE_SENSOR_EV3_GYRO_M2     :
+      case TYPE_SENSOR_EV3_GYRO_M3     :
+      case TYPE_SENSOR_EV3_GYRO_M4     :
+      case TYPE_SENSOR_EV3_INFRARED_M0 :
+      case TYPE_SENSOR_EV3_INFRARED_M1 :
+      case TYPE_SENSOR_EV3_INFRARED_M2 :
+      case TYPE_SENSOR_EV3_INFRARED_M3 :
+      case TYPE_SENSOR_EV3_INFRARED_M4 :
+      case TYPE_SENSOR_EV3_INFRARED_M5 :
+        SEN[port] = EV3_Update(port);
       break;
       default:
         SEN[port] = A_ReadRaw(port);
