@@ -22,6 +22,7 @@
 
 bool   UART_Setup(uint32_t speed = 115200);
 void   UART_WriteArray(byte ByteCount, byte * OutArray);
+void   UART_Write_Debug(byte ByteCount, byte * OutArray);
 int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout = 0);
 void   UART_Flush(void);
 bool   UART_Get_Addr(void);

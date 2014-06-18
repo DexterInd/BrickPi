@@ -131,10 +131,10 @@ int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){
     UART_CKSM &= 0xFF;
     
     if(Checksum != UART_CKSM){
-      Serial.print("Checksum received: ");
-      Serial.print(Checksum);
-      Serial.print("   Checksum computed: ");
-      Serial.println(UART_CKSM);
+      Serial.print("Checksum Fail");
+      // Serial.print(Checksum);
+      // Serial.print("   Checksum computed: ");
+      // Serial.println(UART_CKSM);
       return -5;
     }
     
@@ -148,4 +148,20 @@ int8_t UART_ReadArray(byte & ByteCount, byte * InArray, int timeout){
     return -3;
   }
   return -1;
+}
+
+void UART_Write_Debug(byte ByteCount, byte * OutArray){
+
+  /*UART_CKSM = ByteCount;
+  for(byte i = 0; i < ByteCount; i ++){
+    UART_CKSM += OutArray[i];
+    UART_FULL_ARRAY[i + 2] = OutArray[i];
+  }
+  UART_CKSM &= 0xFF;
+
+  UART_FULL_ARRAY[0] = UART_CKSM;
+  UART_FULL_ARRAY[1] = ByteCount;
+
+  Serial.write(UART_FULL_ARRAY, (byte)(ByteCount + 2)); */
+  Serial.write(OutArray, byte(ByteCount));
 }

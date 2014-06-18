@@ -1,5 +1,7 @@
 /*
- *  Matthew Richardson
+ * Dexter Industries 
+ *
+ * Firmware originally written by Matthew Richardson
  *  matthewrichardson37<at>gmail.com
  *  http://mattallen37.wordpress.com/
  *  
@@ -7,7 +9,7 @@
  *  t.s.jaikrishna<at>gmail.com
  * 
  *  Initial date: June 1, 2013
- *  Last updated: June 8, 2014
+ *  Last updated: June 18, 2014
  *
  *  You may use this code as you wish, provided you give credit where it's due.
  *
@@ -125,8 +127,8 @@
   #define MSG_TYPE_CHANGE_ADDR      1 // Change the UART address.
   #define MSG_TYPE_SENSOR_TYPE      2 // Change/set the sensor type.
   #define MSG_TYPE_VALUES           3 // Set the motor speed and direction, and return the sesnors and encoders.
-  #define MSG_TYPE_E_STOP           4 // Float motors immidately
-  #define MSG_TYPE_TIMEOUT_SETTINGS 5 // Set the timeout
+  #define MSG_TYPE_E_STOP           4 // Float motors immediately.
+  #define MSG_TYPE_TIMEOUT_SETTINGS 5 // Set the timeout.
 
 // RPi to BrickPi
   
@@ -183,16 +185,19 @@
 #define TYPE_SENSOR_EV3_INFRARED_M4    65
 #define TYPE_SENSOR_EV3_INFRARED_M5    66
 
+#define TYPE_SENSOR_EV3_TOUCH_0	       67
+
 
 #define BIT_I2C_MID  0x01  // defined for each device
 #define BIT_I2C_SAME 0x02  // defined for each device
 
 unsigned long COMM_TIMEOUT = 250; // How many ms since the last communication, before timing out (and floating the motors).
 
+// Run this once on setup.
 void setup(){
-  UART_Setup(500000);
-  M_Setup();
-  A_Setup();
+  UART_Setup(500000);	// Start UART
+  M_Setup();			// Motor Setup
+  A_Setup();			// Analog Setup
 }
 
 int8_t Result;
@@ -214,20 +219,70 @@ uint8_t I2C_In_Bytes [2][8];      // How many bytes to read.
 uint8_t I2C_Out_Array[2][8][16];  // Data to write to I2C sensor 1 and 2.
 uint8_t I2C_In_Array [2][8][16];  // Data read from I2C sensor 1 and 2.
 
+byte debug_array[5] = {'d','e','b','u','g'};
+
 unsigned long LastUpdate;
 
+
+void debug_funtions(){
+  
+  /*  DEBUG WORK - Delete when done. */
+
+			/*UART_Write_Debug(5, debug_array);
+			byte value [4] = {0,0,0,0};
+			value[3] = (byte) (SEN[0] & (0xFF));
+			value[2] = (byte) ((SEN[0] >> 8) & 0xFF);
+			value[1] = (byte) ((SEN[0] >> 16) & 0xFF);
+			value[0] = (byte) ((SEN[0] >> 24) & 0xFF);
+			// Print sensor values back
+			UART_Write_Debug(4, value);
+			value[3] = (byte) (SEN[1] & (0xFF));
+			value[2] = (byte) ((SEN[1] >> 8) & 0xFF);
+			value[1] = (byte) ((SEN[1] >> 16) & 0xFF);
+			value[0] = (byte) ((SEN[1] >> 24) & 0xFF);
+			// Print sensor values back
+			UART_Write_Debug(4, value);			  
+			// Print the word debug.
+			UART_Write_Debug(5, debug_array);
+			*/
+			  //SensorType[0] = TYPE_SENSOR_EV3_TOUCH_0;
+			  //SensorType[1] = TYPE_SENSOR_EV3_TOUCH_0;
+			  Array[BYTE_SENSOR_1_TYPE] = TYPE_SENSOR_EV3_TOUCH_0;	// Set the value of Port_1 (or Port 3?) 
+			  Array[BYTE_SENSOR_2_TYPE] = TYPE_SENSOR_EV3_TOUCH_0;	// Set the value of Port_2 (or Port 4?)
+			  
+			// Alternate back and forth between setup and reading values.  
+			  if(Array[BYTE_MSG_TYPE] == MSG_TYPE_SENSOR_TYPE){
+					Array[BYTE_MSG_TYPE] = MSG_TYPE_VALUES;
+			  } else {
+					Array[BYTE_MSG_TYPE] = MSG_TYPE_SENSOR_TYPE;
+			  }
+			  
+			  Result = 1;
+			// UART_Write_Debug(1, &Array[BYTE_MSG_TYPE]);
+			  
+  /*  DEBUG WORK - Delete when done. */
+
+}
+
+// Main loop runs over and over again.  
+
 void loop(){   
-  Result = UART_ReadArray(Bytes, Array, 1);
+  Result = UART_ReadArray(Bytes, Array, 1);		// Get an update from the Raspberry Pi.
   
 /*  if(Result != (-2)){
     Serial.write(Result);
   }*/
-  
-  if(Result == 0){
+	/*  DEBUG WORK - Delete when done. */
+	// debug_funtions();
+	/*  DEBUG WORK - Delete when done. */
+	
+  if(Result == 0){			//0  Destination address was BROADCAST
     LastUpdate = millis();
-    if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){
-      M_Float();
+	// Emergency Stop code
+	if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){	// Float motors immediately.
+      M_Float();									// Float motors immediately.
     }
+	// Reset firmware address (address stored in EEPROM) with a touch sensor.
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_CHANGE_ADDR && Bytes == 2){
       A_Config(PORT_1, 0);                            // Setup PORT_1 for touch sensor
       if(A_ReadRaw(PORT_1) < 250){                    // Change address if touch sensor on port 1 is pressed.
@@ -240,13 +295,16 @@ void loop(){
       SetupSensors();                                 // Change PORT_1 settings back
     }
   }
-  else if(Result == 1){
-    LastUpdate = millis();
-    if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){
+  else if(Result == 1){	 	//1  Destination address was mine
+
+    LastUpdate = millis();	// Update the timeout clock.
+    // Stop all motors.
+	if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){
       M_Float();
       Array[0] = MSG_TYPE_E_STOP;
       UART_WriteArray(1, Array);      
     }
+	// Reset the chips address.
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_CHANGE_ADDR && Bytes == 2){
       A_Config(PORT_1, 0);                            // Setup PORT_1 for touch sensor
       if(A_ReadRaw(PORT_1) < 250){                    // Change address if touch sensor on port 1 is pressed.    
@@ -256,31 +314,39 @@ void loop(){
           UART_WriteArray(1, Array);
         }
       }
-      SetupSensors();                                 // Change PORT_1 settings back      
+      SetupSensors();                                 // Implement sensor settings.  
     }
-    else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_SENSOR_TYPE){
+	// Change/set the sensor type.
+	else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_SENSOR_TYPE){
+		// UART_Write_Debug(5, debug_array);
       ParseSensorSettings();
       SetupSensors();
-      Array[0] = MSG_TYPE_SENSOR_TYPE;
+      Array[0] = MSG_TYPE_SENSOR_TYPE;	// Send back what we received: a command to ste the sensor type.
       UART_WriteArray(1, Array);
     }
+	// Set the motor speed and direction, and return the sensors and encoders.
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_VALUES){
-      ParseHandleValues();
-      UpdateSensors();
-      M_Encoders(ENC[PORT_A], ENC[PORT_B]);      
-      EncodeValues();
+      ParseHandleValues();							// Parse the values sent.
+      UpdateSensors();								// Update the sensors values.
+      M_Encoders(ENC[PORT_A], ENC[PORT_B]);      	// Get encoder values.
+      EncodeValues();								// 
       Array[0] = MSG_TYPE_VALUES;
       UART_WriteArray(Bytes, Array);
     }
+	// Set the timeout
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_TIMEOUT_SETTINGS){
       COMM_TIMEOUT = Array[BYTE_TIMEOUT] + (Array[(BYTE_TIMEOUT + 1)] * 256) + (Array[(BYTE_TIMEOUT + 2)] * 65536) + (Array[(BYTE_TIMEOUT + 3)] * 16777216);
       Array[0] = MSG_TYPE_TIMEOUT_SETTINGS;
       UART_WriteArray(1, Array);
     }
   }
+  
+  // In case of a timeout, shut motors down.
   if(COMM_TIMEOUT && (millis() > (LastUpdate + COMM_TIMEOUT))){   // If it timed out, float the motors
-    M_Float();
+    M_Float();	// Shutdown motors.
   }
+  
+  // Keep the NXT Color Sensor Alive
   byte i = 0;
   while(i < 2){
     if(SensorType[i] == TYPE_SENSOR_COLOR_FULL){
@@ -328,9 +394,10 @@ unsigned char BitsNeeded(unsigned long value){
 }
 
 void ParseSensorSettings(){
-  SensorType[PORT_1] = Array[BYTE_SENSOR_1_TYPE];
-  SensorType[PORT_2] = Array[BYTE_SENSOR_2_TYPE];
+  SensorType[PORT_1] = Array[BYTE_SENSOR_1_TYPE];	// Set the value of Port_1 (or Port 3?) 
+  SensorType[PORT_2] = Array[BYTE_SENSOR_2_TYPE];	// Set the value of Port_2 (or Port 4?)
   Bit_Offset = 0;
+  // Setup custom I2C sensors.
   for(byte port = 0; port < 2; port++){
     if(SensorType[port] == TYPE_SENSOR_I2C
     || SensorType[port] == TYPE_SENSOR_I2C_9V){
@@ -429,6 +496,9 @@ void EncodeValues(){
       case TYPE_SENSOR_EV3_INFRARED_M5 :
         AddBits(1, 0, 16, SEN[port]);
       break; 
+	  case TYPE_SENSOR_EV3_TOUCH_0 	   :		// Send 16 bits or two bytes with the touch result.
+		AddBits(1, 0, 16, SEN[port]);	
+		break;
       case TYPE_SENSOR_EV3_COLOR_M3    :
       case TYPE_SENSOR_EV3_GYRO_M3     :
       case TYPE_SENSOR_EV3_INFRARED_M2 :
@@ -489,6 +559,11 @@ void ParseHandleValues(){
 
 void SetupSensors(){
   EV3_Reset();
+  //
+  // byte test_case = (byte)SensorType[0];		// For debug purposes only
+  // UART_Write_Debug(1, &test_case);
+  // Setup the sensors for a certain configuration.  Goes through each of the sensor ports,
+  // and configures them based on the array values "SensorType[port]"
   for(byte port = 0; port < 2; port++){  
     switch(SensorType[port]){
       case TYPE_SENSOR_TOUCH:
@@ -550,15 +625,22 @@ void SetupSensors(){
       case TYPE_SENSOR_EV3_INFRARED_M3 :
       case TYPE_SENSOR_EV3_INFRARED_M4 :
       case TYPE_SENSOR_EV3_INFRARED_M5 :
-        EV3_Setup(port, SensorType[port]);
-      break;      
-      default:
-        A_Config(port, SensorType[port]);
+        EV3_Setup(port, SensorType[port]);			// For any EV3 this is called.
+      break;     
+      case TYPE_SENSOR_EV3_TOUCH_0 :
+        EV3_Setup_Touch(port);			// For any EV3 this is called.
+	    // UART_Write_Debug(5, debug_array);		
+      break;
+      default:										// Default is analog value.
+        A_Config(port, SensorType[port]);			// Almost everyone that's not defined above is setup this line.
     }
   }  
 }
 
 void UpdateSensors(){
+	byte test_case = 0;		// For debug purposes only
+  // UART_Write_Debug(1, &test_case);
+
   for(byte port = 0; port < 2; port++){
     switch(SensorType[port]){
       case TYPE_SENSOR_TOUCH:
@@ -583,14 +665,14 @@ void UpdateSensors(){
       case TYPE_SENSOR_COLOR_BLUE:
       case TYPE_SENSOR_COLOR_NONE:
         SEN[port] = CS_Update(port);      // If the mode is FULL, the 4 raw values will be stored in CS_Values
-      break;
+		break;
       case TYPE_SENSOR_I2C:
       case TYPE_SENSOR_I2C_9V:
         SEN[port] = 0;
         for(byte device = 0; device < I2C_Devices[port]; device++){
           SEN[port] |= ((I2C_Transfer(port, I2C_Addr[port][device], I2C_Speed[port], (SensorSettings[port][device] & BIT_I2C_MID), I2C_Out_Bytes[port][device], I2C_Out_Array[port][device], I2C_In_Bytes[port][device], I2C_In_Array[port][device]) & 0x01) << device); // The success/failure result of the I2C transaction(s) is stored as 1 bit in SEN.
         }
-      break;
+        break;
       case TYPE_SENSOR_EV3_US_M0       :
       case TYPE_SENSOR_EV3_US_M1       :
       case TYPE_SENSOR_EV3_US_M2       :
@@ -615,10 +697,15 @@ void UpdateSensors(){
       case TYPE_SENSOR_EV3_INFRARED_M3 :
       case TYPE_SENSOR_EV3_INFRARED_M4 :
       case TYPE_SENSOR_EV3_INFRARED_M5 :
-        SEN[port] = EV3_Update(port);
-      break;
+        SEN[port] = EV3_Update(port);		
+        break;
+      case TYPE_SENSOR_EV3_TOUCH_0 :
+        SEN[port] = EV3_Update_Touch(port);	
+	    // UART_Write_Debug(5, debug_array);		
+        break;
+		
       default:
-        SEN[port] = A_ReadRaw(port);
+        SEN[port] = A_ReadRaw(port);		
     }
   }
 }
