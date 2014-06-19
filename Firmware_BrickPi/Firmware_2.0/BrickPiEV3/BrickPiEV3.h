@@ -84,6 +84,9 @@ long		EV3_Update(uint8_t port);
 byte 		check(byte cmd, byte lsb, byte msb);
 void		EV3_Reset();
 uint8_t 	EV3_Setup_Touch(uint8_t port);
-long	EV3_Update_Touch(uint8_t port);
-
+long		EV3_Update_Touch(uint8_t port);
+long		EV3_Update_Touch_Debounce(uint8_t port);
+long 	 	A_ReadRaw_Debounce_Ch(uint8_t port);
+uint16_t    A_ReadRawCh_Debounce(uint8_t port);
+uint16_t 	A_ReadRawCh_Deb(uint8_t channel);
 #endif

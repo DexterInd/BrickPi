@@ -13,6 +13,7 @@
 */
 
 #include "BrickPiA.h"
+int 		nxt_debounce[] = {0,0};		// Hold the last value of the EV3 touch sensor. 
 
 uint8_t A_Setup(){
   ADCSRA &= ~(1 << ADPS0);   // This bit is automatically set by Arduino
@@ -84,3 +85,4 @@ uint8_t A_Set9V(uint8_t port, uint8_t state){
   if(state) PORTD |=  (0x40 << port);  // Set PD6/PD7 high  
   else      PORTD &= ~(0x40 << port);  // Set PD6/PD7 low
 }
+

@@ -113,6 +113,8 @@
 #include "SoftwareSerial.h"
 #include "BrickPiEV3.h"
 
+#define VERSION 2				  // This is version 2 firmware.
+
 #define BYTE_MSG_TYPE               0 // MSG_TYPE is the first byte.
   #define MSG_TYPE_CHANGE_ADDR      1 // Change the UART address.
   #define MSG_TYPE_SENSOR_TYPE      2 // Change/set the sensor type.
@@ -176,6 +178,11 @@
 #define TYPE_SENSOR_EV3_INFRARED_M5    66
 
 #define TYPE_SENSOR_EV3_TOUCH_0	       67
+
+#define TYPE_SENSOR_EV3_TOUCH_DEBOUNCE	   68	// EV3 Touch sensor, debounced.
+#define TYPE_SENSOR_TOUCH_DEBOUNCE	       69	// NXT Touch sensor, debounced.
+
+#define RETURN_VERSION	       			70		// Returns firmware version.
 
 
 #define BIT_I2C_MID  0x01  // defined for each device
@@ -621,10 +628,18 @@ void SetupSensors(){
       case TYPE_SENSOR_EV3_INFRARED_M4 :
       case TYPE_SENSOR_EV3_INFRARED_M5 :
         EV3_Setup(port, SensorType[port]);	// For any EV3 this is called.
-      break;     
+		break;     
       case TYPE_SENSOR_EV3_TOUCH_0 :
         EV3_Setup_Touch(port);				// We setup the touch sensor different since it's an analog sensor.	
-      break;
+		break;
+	  case TYPE_SENSOR_EV3_TOUCH_DEBOUNCE:
+		EV3_Setup_Touch(port);				// We're really doing whatever we're doing above for the touch.
+		break;
+	  case TYPE_SENSOR_TOUCH_DEBOUNCE:		// NXT Sensor debounced.
+		A_Config(port, 0);					// Same sort of setup as the TYPE_SENSOR_TOUCH.
+		EV3_Setup_Touch(port);				// We're really doing whatever we're doing above for the touch.
+
+		break;
       default:								// Default is analog value.
         A_Config(port, SensorType[port]);	// Almost everyone that's not defined above is setup this line.
     }
@@ -696,7 +711,15 @@ void UpdateSensors(){
       case TYPE_SENSOR_EV3_TOUCH_0 :
         SEN[port] = EV3_Update_Touch(port);	
         break;
-		
+	  case TYPE_SENSOR_EV3_TOUCH_DEBOUNCE:
+		SEN[port] = EV3_Update_Touch_Debounce(port);		// Returns a 1 or 0
+		break;
+	  case TYPE_SENSOR_TOUCH_DEBOUNCE:
+		SEN[port] = A_ReadRaw_Debounce_Ch(port);			//
+		break;
+	  case RETURN_VERSION:
+		SEN[port] = VERSION;			//
+		break;
       default:
         SEN[port] = A_ReadRaw(port);		
     }
