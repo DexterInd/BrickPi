@@ -1,8 +1,8 @@
 /*
-*  Jaikrishna T S
-*  t.s.jaikrishna<at>gmail.com
+* Dexter Industries EV3 Sensor Code
+*  Jaikrishna T S *  t.s.jaikrishna<at>gmail.com
 *  Initial date: June 3, 2014
-*  Last updated: June 8, 2014
+*  Last updated: June 19, 2014	By John
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *

@@ -1,36 +1,26 @@
 /*
  * Dexter Industries 
+ * EV3 Sensor Firmware for the BrickPi.
  *
- * Firmware originally written by Matthew Richardson
- *  matthewrichardson37<at>gmail.com
- *  http://mattallen37.wordpress.com/
- *  
- *  Jaikrishna T S
- *  t.s.jaikrishna<at>gmail.com
+ * Firmware originally written by Matthew Richardson *  matthewrichardson37<at>gmail.com *  http://mattallen37.wordpress.com/
+ * Firmware updated by  *  Jaikrishna T S *  t.s.jaikrishna<at>gmail.com
+ * Firmware updated by John Cole at Dexter Industries.
  * 
  *  Initial date: June 1, 2013
- *  Last updated: June 18, 2014
+ *  Last updated: June 19, 2014
  *
  *  You may use this code as you wish, provided you give credit where it's due.
  *
- *  This program is specifically to be used with the BrickPi.
+ *  This program is Firmware for the BrickPi.
  *
- *  This is the BrickPi FW.
- *
- *  NOTE: The BrickPiM Library conflicts with the SoftwareSerial Library that is included in the BrickPiEV3 Library. 
+ *  EV3 DEVELOPMENT NOTE: The BrickPiM Library conflicts with the SoftwareSerial Library that is included in the BrickPiEV3 Library. 
  *  Hence it is required to modify the default SoftwareSerial library that comes with Arduino.
- *  To do this, open Arduino/libraries/SoftwareSerial/SoftwareSerial.h and add this line - "#undef PCINT2_vect"
+ *  To do this, open Arduino/libraries/SoftwareSerial/SoftwareSerial.h and add this line - "#undef PCINT2_vect" before compiling the firmware.
  *
  */
 
-/*
-
-  Tasks that would require constant updating:
-    RCX rotation sensor
-    Motor speed/position regulation
-  
-  Could potentially use a timout of 2ms with UART_Read, and do the above in the main loop
-
+/*  Tasks that would require constant updating:    RCX rotation sensor, Motor speed/position regulation,  
+    Could potentially use a timout of 2ms with UART_Read, and do the above in the main loop
 */
 
 /*
@@ -223,13 +213,13 @@ byte debug_array[5] = {'d','e','b','u','g'};
 
 unsigned long LastUpdate;
 
-
+// This is a debug routine used by John Cole for developing the EV3 Touch sensor and testing EV3 sensor development.
 void debug_funtions(){
   
-  /*  DEBUG WORK - Delete when done. */
+  /*  DEBUG WORK - DON"T COMPILE. */
 
-			/*UART_Write_Debug(5, debug_array);
-			byte value [4] = {0,0,0,0};
+			/*UART_Write_Debug(5, debug_array);		// Marker for seeing where you are in logic analyzer data.
+			byte value [4] = {0,0,0,0};		
 			value[3] = (byte) (SEN[0] & (0xFF));
 			value[2] = (byte) ((SEN[0] >> 8) & 0xFF);
 			value[1] = (byte) ((SEN[0] >> 16) & 0xFF);
@@ -243,7 +233,7 @@ void debug_funtions(){
 			// Print sensor values back
 			UART_Write_Debug(4, value);			  
 			// Print the word debug.
-			UART_Write_Debug(5, debug_array);
+			UART_Write_Debug(5, debug_array);		// Marker for seeing where you are in logic analyzer data.
 			*/
 			  //SensorType[0] = TYPE_SENSOR_EV3_TOUCH_0;
 			  //SensorType[1] = TYPE_SENSOR_EV3_TOUCH_0;
@@ -273,10 +263,11 @@ void loop(){
     Serial.write(Result);
   }*/
 	/*  DEBUG WORK - Delete when done. */
-	// debug_funtions();
+	// debug_funtions();		// John's Debug Functions.
 	/*  DEBUG WORK - Delete when done. */
 	
   if(Result == 0){			//0  Destination address was BROADCAST
+							// This means that the Raspberry Pi sent a message to both Atmegas.
     LastUpdate = millis();
 	// Emergency Stop code
 	if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){	// Float motors immediately.
@@ -296,7 +287,7 @@ void loop(){
     }
   }
   else if(Result == 1){	 	//1  Destination address was mine
-
+							// This means the Raspberry Pi is talking to this atmega specifically.
     LastUpdate = millis();	// Update the timeout clock.
     // Stop all motors.
 	if(Array[BYTE_MSG_TYPE] == MSG_TYPE_E_STOP){
@@ -304,6 +295,7 @@ void loop(){
       Array[0] = MSG_TYPE_E_STOP;
       UART_WriteArray(1, Array);      
     }
+	
 	// Reset the chips address.
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_CHANGE_ADDR && Bytes == 2){
       A_Config(PORT_1, 0);                            // Setup PORT_1 for touch sensor
@@ -316,6 +308,7 @@ void loop(){
       }
       SetupSensors();                                 // Implement sensor settings.  
     }
+	
 	// Change/set the sensor type.
 	else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_SENSOR_TYPE){
 		// UART_Write_Debug(5, debug_array);
@@ -324,6 +317,7 @@ void loop(){
       Array[0] = MSG_TYPE_SENSOR_TYPE;	// Send back what we received: a command to ste the sensor type.
       UART_WriteArray(1, Array);
     }
+	
 	// Set the motor speed and direction, and return the sensors and encoders.
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_VALUES){
       ParseHandleValues();							// Parse the values sent.
@@ -333,6 +327,7 @@ void loop(){
       Array[0] = MSG_TYPE_VALUES;
       UART_WriteArray(Bytes, Array);
     }
+	
 	// Set the timeout
     else if(Array[BYTE_MSG_TYPE] == MSG_TYPE_TIMEOUT_SETTINGS){
       COMM_TIMEOUT = Array[BYTE_TIMEOUT] + (Array[(BYTE_TIMEOUT + 1)] * 256) + (Array[(BYTE_TIMEOUT + 2)] * 65536) + (Array[(BYTE_TIMEOUT + 3)] * 16777216);
@@ -558,7 +553,7 @@ void ParseHandleValues(){
 }
 
 void SetupSensors(){
-  EV3_Reset();
+  EV3_Reset();			// Resets EV3 sensors and flushes the line.
   //
   // byte test_case = (byte)SensorType[0];		// For debug purposes only
   // UART_Write_Debug(1, &test_case);
@@ -625,14 +620,13 @@ void SetupSensors(){
       case TYPE_SENSOR_EV3_INFRARED_M3 :
       case TYPE_SENSOR_EV3_INFRARED_M4 :
       case TYPE_SENSOR_EV3_INFRARED_M5 :
-        EV3_Setup(port, SensorType[port]);			// For any EV3 this is called.
+        EV3_Setup(port, SensorType[port]);	// For any EV3 this is called.
       break;     
       case TYPE_SENSOR_EV3_TOUCH_0 :
-        EV3_Setup_Touch(port);			// For any EV3 this is called.
-	    // UART_Write_Debug(5, debug_array);		
+        EV3_Setup_Touch(port);				// We setup the touch sensor different since it's an analog sensor.	
       break;
-      default:										// Default is analog value.
-        A_Config(port, SensorType[port]);			// Almost everyone that's not defined above is setup this line.
+      default:								// Default is analog value.
+        A_Config(port, SensorType[port]);	// Almost everyone that's not defined above is setup this line.
     }
   }  
 }
@@ -701,7 +695,6 @@ void UpdateSensors(){
         break;
       case TYPE_SENSOR_EV3_TOUCH_0 :
         SEN[port] = EV3_Update_Touch(port);	
-	    // UART_Write_Debug(5, debug_array);		
         break;
 		
       default:
