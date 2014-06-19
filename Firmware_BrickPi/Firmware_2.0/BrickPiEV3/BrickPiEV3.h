@@ -1,8 +1,8 @@
 /*
-*  Jaikrishna T S
-*  t.s.jaikrishna<at>gmail.com
+* Dexter Industries EV3 Sensor Code
+*  Jaikrishna T S *  t.s.jaikrishna<at>gmail.com
 *  Initial date: June 3, 2014
-*  Last updated: June 8, 2014
+*  Last updated: June 19, 2014	By John
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *
@@ -77,9 +77,13 @@
 #define TYPE_SENSOR_EV3_INFRARED_M4    65
 #define TYPE_SENSOR_EV3_INFRARED_M5    66
 
+#define TYPE_SENSOR_EV3_TOUCH_0		   67
+
 uint8_t 	EV3_Setup(uint8_t port, uint8_t type);
 long		EV3_Update(uint8_t port);
 byte 		check(byte cmd, byte lsb, byte msb);
 void		EV3_Reset();
+uint8_t 	EV3_Setup_Touch(uint8_t port);
+long	EV3_Update_Touch(uint8_t port);
 
 #endif

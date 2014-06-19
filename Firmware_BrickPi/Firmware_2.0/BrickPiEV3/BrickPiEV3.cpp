@@ -1,8 +1,7 @@
-/*
-*  Jaikrishna T S
-*  t.s.jaikrishna<at>gmail.com
+/* Dexter Industries Code for EV3 and the BrickPi
+*  Jaikrishna T S *  t.s.jaikrishna<at>gmail.com 
 *  Initial date: June 3, 2014
-*  Last updated: June 8, 2014
+*  Last updated: June 19, 2014
 *
 *  You may use this code as you wish, provided you give credit where it's due.
 *
@@ -33,6 +32,7 @@
 */
 
 #include "BrickPiEV3.h"
+#include "BrickPiUART.h"         // BrickPi UART library
 
 SoftwareSerial sensor1(14,16); //Rx, Tx
 SoftwareSerial sensor2(15,17);
@@ -168,7 +168,8 @@ long	EV3_Update(uint8_t port)
 	if( port == PORT_1 ){
 
     sensor1.write(BYTE_NACK);   // To keep the sensor in data mode
-    if(sensor1.available()){
+    if(sensor1.available())
+	{
       se = sensor1.read();      // Read the first CMD byte
       if ( (se & CMD_MASK) == CMD_DATA ){ // if it is data
         ret = 0;
@@ -181,9 +182,9 @@ long	EV3_Update(uint8_t port)
           ret |= (m[n]<<8) | l[n] ;
         }
         if (sensor1.read() == chk){ // if the checksum is matched, return data
-          return ret;
+			return ret;
         } else {
-        sensor1.flush();    // else flush
+			sensor1.flush();    // else flush
         return -2;
         }
       }
@@ -228,6 +229,32 @@ long	EV3_Update(uint8_t port)
 */    return -4;
 	}
   return -6;
+}
+
+/// Touch Sensor Stuff.
+
+uint8_t 	EV3_Setup_Touch(uint8_t port)  // Sets up the sensor port to read the touch sensor.
+{
+	// Does anything need to really be done?  
+	// Analog read seems to be automatic.
+	// No, we have just added this function for symmetry.  That's all.
+	return 0;
+}
+
+long	EV3_Update_Touch(uint8_t port)		// Reads the EV3 touch sensor.
+{
+	long sensorValue = 0;					
+	if( port == PORT_1 ){					// If we're reading port 1
+		sensorValue = analogRead(A0);  		// Read the analog value of the A0
+		return sensorValue;					// Return that value.
+    }
+	else if( port == PORT_2 ){				// If we're reading Port 2
+		sensorValue = analogRead(A1);  		// Read the analog value of A1
+		return sensorValue;					// Return that value.
+    }
+	else{
+		return -1;							// Something was called incorrectly.  Give 'em hell.
+	}
 }
 
 byte check(byte cmd, byte lsb, byte msb){
