@@ -26,6 +26,7 @@
 #define MASK_D0_S 0x08
 #define MASK_D1_S 0x10
 
+
 uint8_t  A_Setup(void);
 uint16_t A_ReadRaw(uint8_t port);
 uint16_t A_ReadRawCh(uint8_t channel);
@@ -33,5 +34,7 @@ uint8_t  A_Config(uint8_t port, uint8_t states);
 uint8_t  A_Set9V(uint8_t port, uint8_t state);
 uint8_t  A_SetD0(uint8_t port, uint8_t mode, uint8_t state);
 uint8_t  A_SetD1(uint8_t port, uint8_t mode, uint8_t state);
+
+
 
 #endif

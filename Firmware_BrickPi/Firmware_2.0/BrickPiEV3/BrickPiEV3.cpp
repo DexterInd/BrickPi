@@ -34,10 +34,15 @@
 #include "BrickPiEV3.h"
 #include "BrickPiUART.h"         // BrickPi UART library
 
+byte debug_arrays[5] = {'d','e','b','u','g'};
+
 SoftwareSerial sensor1(14,16); //Rx, Tx
 SoftwareSerial sensor2(15,17);
 byte se,l[8],m[8];              // se holds the CMD byte , l - LSB, m - MSB, array declared to support more than 1 data set
 byte sets[2];                   // Number of data sets of each port
+
+int ev3_debounce[] = {0,0};		// Hold the last value of the EV3 touch sensor. 
+int nxt_debounce[] = {0,0};		// Hold the last value of the NXT touch sensor. 
 
 bool dat16[] = { 1,1,0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,0,1 }; // Incoming data type is either 16 bit or 8 bit in each type
 byte setsd[] = { 1,1,1,1,1,1,1,1,1,1,2,3,4,1,1,1,2,4,1,8,4,1,4,2 }; // The number of incoming data sets in each type 
@@ -238,6 +243,10 @@ uint8_t 	EV3_Setup_Touch(uint8_t port)  // Sets up the sensor port to read the t
 	// Does anything need to really be done?  
 	// Analog read seems to be automatic.
 	// No, we have just added this function for symmetry.  That's all.
+	nxt_debounce[0] = 0;
+	nxt_debounce[1] = 0;
+	ev3_debounce[0] = 0;
+	ev3_debounce[1] = 0;	
 	return 0;
 }
 
@@ -255,6 +264,122 @@ long	EV3_Update_Touch(uint8_t port)		// Reads the EV3 touch sensor.
 	else{
 		return -1;							// Something was called incorrectly.  Give 'em hell.
 	}
+}
+
+// This code is going to be just like the above code but we're going to debounce it over each reading.  
+// You'll need two readings to change the state of the touch sensor.
+long 	EV3_Update_Touch_Debounce(uint8_t port)		// Reads the debounced EV3 touch sensor.
+{
+	long sensorValue = 0;					
+	int last_value = 0;
+	int this_value = 0;
+	if( port == PORT_1 ){					// If we're reading port 1
+		sensorValue = analogRead(A0);  		// Read the analog value of the A0
+		if(sensorValue > 1020){ 
+			this_value = 1;
+		}	// If we've got a reading above 1020, the button is on.  Otherwise it stays off.
+		
+		// Debouncing logic.
+		last_value = ev3_debounce[0];			// Get the last value.
+		if(last_value != this_value){		// If the current is not the past, make the past current.
+			ev3_debounce[0] = this_value;
+			return last_value;				// Return the past
+		} else {
+			return last_value;				// Return the past.
+		}
+		// return sensorValue;					// Return that value.
+    }
+	else if( port == PORT_2 ){				// If we're reading Port 2
+		sensorValue = analogRead(A1);  		// Read the analog value of A1
+		if(sensorValue > 1020){ 
+			this_value = 1;
+		}	// If we've got a reading above 1020, the button is on.  Otherwise it stays off.
+		
+		// Debouncing logic.
+		last_value = ev3_debounce[1];			// Get the last value.
+		if(last_value != this_value){		// If the current is not the past, make the past current.
+			ev3_debounce[1] = this_value;
+			return last_value;				// Return the past
+		} else {
+			return last_value;				// Return the past.
+		}
+    }
+	else{
+		return -1;							// Something was called incorrectly.  Give 'em hell.
+	}
+}
+
+uint16_t A_ReadRawCh_Debounce(uint8_t port){
+  return A_ReadRawCh_Deb(port + 6);
+}
+
+uint16_t A_ReadRawCh_Deb(uint8_t channel){
+  if(channel > 7)
+    return 0;
+
+	uint8_t low, high;
+
+  // Set the analog multiplexer channel
+	ADMUX = (channel & 0x07);
+
+	// start the conversion
+	ADCSRA |= (1 << ADSC);
+
+	// ADSC is cleared when the conversion finishes
+	while(ADCSRA & (1 << ADSC));
+
+	// we have to read ADCL first; doing so locks both ADCL
+	// and ADCH until ADCH is read.  reading ADCL second would
+	// cause the results of each conversion to be discarded,
+	// as ADCL and ADCH would be locked when it completed.
+	low  = ADCL;
+	high = ADCH;
+
+	return (high << 8) | low;
+}
+
+
+long A_ReadRaw_Debounce_Ch(uint8_t channel)
+{
+	long sensorValue = 0;					
+	int last_value = 0;
+	int this_value = 0;
+	if( channel == PORT_1 ){					// If we're reading port 1
+		sensorValue = A_ReadRawCh_Debounce(channel); 		// Read the analog value
+		if(sensorValue < 400){ 
+			this_value = 1;
+		}	// If we've got a reading above 1020, the button is on.  Otherwise it stays off.
+		
+		// Debouncing logic.
+		last_value = nxt_debounce[0];			// Get the last value.
+		if(last_value != this_value){		// If the current is not the past, make the past current.
+			nxt_debounce[0] = this_value;
+			return last_value;				// Return the past
+		} else {
+			return last_value;				// Return the past.
+		}
+		// return sensorValue;					// Return that value.
+    }
+	else if( channel == PORT_2 ){				// If we're reading Port 2
+		sensorValue = A_ReadRawCh_Debounce(channel);   		// Read the analog value of A1
+		if(sensorValue < 400){ 
+			this_value = 1;
+		}	// If we've got a reading above 1020, the button is on.  Otherwise it stays off.
+		
+		// Debouncing logic.
+		last_value = ev3_debounce[1];			// Get the last value.
+		if(last_value != this_value){		// If the current is not the past, make the past current.
+			ev3_debounce[1] = this_value;
+			return last_value;				// Return the past
+		} else {
+			return last_value;				// Return the past.
+		}
+    }
+	else{
+		return -1;							// Something was called incorrectly.  Give 'em hell.
+	}	
+	
+	
 }
 
 byte check(byte cmd, byte lsb, byte msb){
