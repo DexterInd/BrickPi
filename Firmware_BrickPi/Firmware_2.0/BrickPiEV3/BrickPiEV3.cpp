@@ -251,14 +251,25 @@ uint8_t 	EV3_Setup_Touch(uint8_t port)  // Sets up the sensor port to read the t
 }
 
 long	EV3_Update_Touch(uint8_t port)		// Reads the EV3 touch sensor.
-{
-	long sensorValue = 0;					
+{	//NOTE: Reading the analog values directly from the EV3 touch sensor does not work
+	//		because of noise on the line. Reading a number of values and averaging them
+	//		does solve the problem. Change the samp_size to increase or decrease the
+	//		number of samples read. It takes ~100us for 1 sample, so for 20 samples it
+	//		takes 2ms.
+	long sensorValue = 0,sum=0;	
+	int i,samp_size=20;						// Number of samples to take for averaging
 	if( port == PORT_1 ){					// If we're reading port 1
-		sensorValue = analogRead(A0);  		// Read the analog value of the A0
+		//sensorValue = analogRead(A0);  		// Read the analog value of the A0
+		for(i=0;i<samp_size;i++)
+			sum+=analogRead(A0);
+		sensorValue = sum/samp_size;		// Average the final value
 		return sensorValue;					// Return that value.
     }
 	else if( port == PORT_2 ){				// If we're reading Port 2
-		sensorValue = analogRead(A1);  		// Read the analog value of A1
+		//sensorValue = analogRead(A1);  		// Read the analog value of A1
+		for(i=0;i<samp_size;i++)
+			sum+=analogRead(A1);
+		sensorValue = sum/samp_size;		// Average the final value
 		return sensorValue;					// Return that value.
     }
 	else{
