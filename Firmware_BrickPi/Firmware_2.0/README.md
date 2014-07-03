@@ -14,6 +14,7 @@ Hints to Get this to Compile:
  
 To easily find the compiled .hex file, be sure to go to Preferences and turn on "Show verbose output during compilation.  You'll find the temporary directory the code is compiled to after it's succesfully compiled.
 
+DEVELOPER NOTE:  When updating this, be sure to read the entire hex file off the memory of an Arduino.  This include the bootloader and this will allow you to program via serial.
 
 =====
 
