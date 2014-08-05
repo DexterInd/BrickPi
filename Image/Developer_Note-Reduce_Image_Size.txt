@@ -5,7 +5,11 @@ When changing an image around you may want to reduce the image size or cut out e
 We use Ubuntu to reduce the image size of the Raspberry Pi image on disk.  We are essentially eliminating unused space.
 
 1.  Insert your SD Card in the Ubuntu machine.
-2.  Open GParted.  Observe the number of sectors and sector size.
+2.  Open GParted.  Record the number of sectors and sector size.
+2.1	In Gparted, unmount both partitions.
+2.2	Select "Partition with Extra Space"
+2.3	Resize the partition closer in size to the unused area.  Black magic here on how much to shave off, we recommend not shaving more than you need to.
+
 3.  Calculate out the size of the partitions.  In Gparted click "View --> Device Information".  
 5.  Note the number of sectors and the sector sizeof the image.  
 6.  Calculate out the number of sectors for the new image.  Divide the size of the final image by the sector size to get the number of sectors to copy over.

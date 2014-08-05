@@ -28,6 +28,7 @@ MD5 Hash: 25485dd0552e4c0050e5a8f87d73dd1b
 2014.07.29
 ==========
 + sudo update / upgrade
++ sudo apt-get clean
 - Removed Adafruit IDE
 + Updated all repositories:  Arduberry, BrickPi, GrovePi, BrickPi_Python, BrickPi_C, BrickPi_Scratch
 + Added GoPiGo Repository
@@ -40,6 +41,5 @@ MD5 Hash: 25485dd0552e4c0050e5a8f87d73dd1b
 + Camera Streaming for GoPiGo	(start 213 mb, end at 82 mb free.)
 + sudo apt-get autoremove libfltk1.3
 + PS3 Controller Installation
-+ sudo apt-get clean
 + Cloned Raspbian_for_robots and installed scripts for updates.
 + Remove WIFI Login credentials to Dexter Industries Lab
