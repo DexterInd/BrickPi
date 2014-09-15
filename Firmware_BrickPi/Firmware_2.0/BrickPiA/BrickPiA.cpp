@@ -13,7 +13,7 @@
 */
 
 #include "BrickPiA.h"
-int 		nxt_debounce[] = {0,0};		// Hold the last value of the EV3 touch sensor. 
+// int 		nxt_debounce[] = {0,0};		// Hold the last value of the EV3 touch sensor. 
 
 uint8_t A_Setup(){
   ADCSRA &= ~(1 << ADPS0);   // This bit is automatically set by Arduino
