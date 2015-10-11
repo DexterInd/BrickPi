@@ -107,13 +107,14 @@ else
 	echo "Already Disabled"
 fi
 
-echo "Installing Scratch"
-git clone https://github.com/DexterInd/BrickPi_Scratch.git
-sudo wget https://bitbucket.org/pypa/setuptools/raw/0.7.4/ez_setup.py -O - | sudo python
-cd BrickPi_Scratch/
-git clone https://github.com/pilliq/scratchpy.git
-cd scratchpy
-sudo make install
+# Removed Installing Scratch.  Latest versions of Raspbian install Scratch.  
+# echo "Installing Scratch"
+# git clone https://github.com/DexterInd/BrickPi_Scratch.git
+# sudo wget https://bitbucket.org/pypa/setuptools/raw/0.7.4/ez_setup.py -O - | sudo python
+# cd BrickPi_Scratch/
+# git clone https://github.com/pilliq/scratchpy.git
+# cd scratchpy
+# sudo make install
 
 sudo python setup.py install
 echo " "
