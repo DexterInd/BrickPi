@@ -11,5 +11,5 @@ setuptools.setup(
 	author="Dexter Industries",
 	url="http://www.dexterindustries.com/BrickPi/",
 	py_modules=['BrickPi'],
-	install_requires=open('requirements.txt').readlines(),
+	# install_requires=open('requirements.txt').readlines(),
 )
