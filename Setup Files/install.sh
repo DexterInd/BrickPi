@@ -16,8 +16,13 @@ echo " "
 printf "Welcome to BrickPi Installer.\nPlease ensure internet connectivity before running this script.\n
 NOTE: Raspberry Pi will reboot after completion."
 printf "Special thanks to Joe Sanford at Tufts University.  This script was derived from his work.  Thank you Joe!"
-echo "Must be running as Root user"
-echo " "
+echo ""
+
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root" 
+	echo "Please use sudo bash install.sh"
+	exit 1
+fi
 echo "Press ENTER to begin..."
 read
 
@@ -36,7 +41,8 @@ echo " "
 echo "Installing Dependencies"
 echo "======================="
 sudo apt-get dist-upgrade
-sudo apt-get install python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus
+sudo apt-get install -y python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus python-setuptools python-dev build-essential
+sudo pip install -U future
 echo "Dependencies installed"
 
 #git clone git://git.drogon.net/wiringPi
@@ -106,6 +112,11 @@ if grep -q "console=ttyAMA0,115200 kgdboc=ttyAMA0,115200" /boot/cmdline.txt; the
 else
 	echo "Already Disabled"
 fi
+if grep -q "console=serial0,11520" /boot/cmdline.txdt; then
+    sudo sed -i -e "/console=serial0,11520/d" /boot/cmdline.txt
+else
+    echo "Already Disabled - Part 2"
+fi
 
 # Removed Installing Scratch.  Latest versions of Raspbian install Scratch.  
 # echo "Installing Scratch"
@@ -116,6 +127,26 @@ fi
 # cd scratchpy
 # sudo make install
 
+# remove serial login which is now active by default with Raspbian/Pixel
+if grep -q "VERSION_ID=\"8\"" /etc/os-release
+then
+#os is Jessie
+    sudo sed -i "/dtoverlay=pi3-miniuart-bt-overlay/d" /boot/config.txt
+    sudo sed -i "/force_turbo=1/d" /boot/config.txt
+    sudo sed -i "/dtoverlay=pi3-miniuart-bt/d" /boot/config.txt
+    sudo sed -i "/enable_uart=0/d" /boot/config.txt
+    if ! grep -Fxq "enable_uart=1" /boot/config.txt
+    then
+        sudo echo "enable_uart=1" >> /boot/config.txt
+    fi
+    if ! grep -Fxq "dtoverlay=pi3-disable-bt" /boot/config.txt
+    then
+        sudo echo "dtoverlay=pi3-disable-bt" >> /boot/config.txt
+    fi
+    sudo systemctl disable hciuart
+fi
+
+echo "Installing libraries for Python2"
 sudo python setup.py install
 echo " "
 echo "Restarting"
