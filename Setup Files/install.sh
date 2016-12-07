@@ -113,7 +113,7 @@ else
 	echo "Already Disabled"
 fi
 if grep -q "console=serial0,115200" /boot/cmdline.txt; then
-    sudo sed -i -e "/console=serial0,115200/d" /boot/cmdline.txt
+    sudo sed -i -e 's/console=serial0,115200//g' /boot/cmdline.txt
 else
     echo "Already Disabled - Part 2"
 fi
