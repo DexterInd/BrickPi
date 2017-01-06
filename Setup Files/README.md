@@ -1,6 +1,10 @@
 Setup Files
 
-Files you will need to modify your Raspberry Pi for operation with the BrickPi.
+You can install the BrickPi on your own image using the install scripts here.  For new users, we strongly recommend using Raspbian for Robots, which has all the installation done for you!  You can [download it for free using these directions.](http://www.dexterindustries.com/howto/install-raspbian-for-robots-image-on-an-sd-card/)
+
+To install, run the following commands:
+	sudo chmod +x install.sh
+	sudo ./install.sh
 
 For those using Raspberry Pi 3, you will need to disable bluetooth. The way Raspberry Pi 3 uses Bluetooth causes issues with BrickPi. Before you install the drivers, execute the following commands.
 

@@ -1,4 +1,8 @@
 #! /bin/bash
+# Run this script with the following commands:
+#	sudo chmod +x install.sh
+#	sudo ./install.sh
+
 echo "  _____            _                                ";
 echo " |  __ \          | |                               ";
 echo " | |  | | _____  _| |_ ___ _ __                     ";
