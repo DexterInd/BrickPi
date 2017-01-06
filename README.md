@@ -23,5 +23,5 @@ The board firmware is made in Arduino in order to make it super-hackable.  The f
 
 The board supports LEGO NXT motors, EV3 motors, and LEGO NXT sensors, as well as many of Dexter Industries sensors for LEGO Mindstorms.
 
-[Dexter Industries] (http://www.dexterindustries.com/)
-[http://www.dexterindustries.com/BrickPi] (http://www.dexterindustries.com/BrickPi)
+[Dexter Industries](http://www.dexterindustries.com/)
+[BrickPi for the Raspberry Pi](http://www.dexterindustries.com/BrickPi)

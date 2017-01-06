@@ -26,7 +26,7 @@ SETUP_PATH=$PWD
 
 if [[ $EUID -ne 0 ]]; then
 	echo "This script must be run as root" 
-	echo "Please use sudo bash install.sh"
+	echo "Please use sudo ./install.sh"
 	exit 1
 fi
 echo "Press ENTER to begin..."
