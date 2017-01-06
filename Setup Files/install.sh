@@ -164,8 +164,11 @@ then
     sudo systemctl disable hciuart
 fi
 
-echo "Installing libraries for Python2"
+echo "Installing libraries for Python"
+cd ..
+cd /Software/BrickPi_Python/
 sudo python setup.py install
+
 echo " "
 echo "Restarting"
 echo "3"
