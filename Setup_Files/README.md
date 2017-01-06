@@ -7,6 +7,7 @@ You can install the BrickPi on your own image using the install scripts here.  F
 To install, run the following commands:
 
 > sudo chmod +x install.sh
+
 > sudo ./install.sh
 
 ## Developer Notes
@@ -15,15 +16,15 @@ For those using Raspberry Pi 3, you will need to disable bluetooth.  This is don
 Basic Steps Taken by the Install Script:
 
 1. Installs Dependencies
-..1.`sudo apt-get dist upgrade`
-..2.`sudo apt-get install -y python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus python-setuptools python-dev build-essential`
-..3.`sudo pip install -U future`
+  1. `sudo apt-get dist upgrade`
+  2. `sudo apt-get install -y python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus python-setuptools python-dev build-essential`
+  3. `sudo pip install -U future`
 
 2. Edits the boot config with
-..1.    `sudo nano /boot/config.txt`
-..2.    Adds "dtoverlay=pi3-disable-bt" to the end of the file
-..3.	Saves the file
-..4.	Runs `sudo systemctl disable hciuart` to prevent BT modem from attempting to use UART
+  1.  `sudo nano /boot/config.txt`
+  2.  Adds "dtoverlay=pi3-disable-bt" to the end of the file
+  3.	Saves the file
+  4.	Runs `sudo systemctl disable hciuart` to prevent BT modem from attempting to use UART
 
 3. Runs `sudo raspi-config` and goes to "7 Advanced Options" --> "A8 Serial" --> And then selects "No" through script.
 4. Modifies /boot/config.txt to enable_uart=1 (This line should be there from the previous install, but set to 0 from the raspi-config commands
