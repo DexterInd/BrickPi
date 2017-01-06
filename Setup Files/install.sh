@@ -165,6 +165,7 @@ then
 fi
 
 echo "Installing libraries for Python"
+echo $PWD
 cd ..
 cd Software/BrickPi_Python/
 sudo python setup.py install
