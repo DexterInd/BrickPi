@@ -166,7 +166,7 @@ fi
 
 echo "Installing libraries for Python"
 cd ..
-cd /Software/BrickPi_Python/
+cd Software/BrickPi_Python/
 sudo python setup.py install
 
 echo " "
