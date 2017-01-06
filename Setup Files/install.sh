@@ -22,6 +22,8 @@ NOTE: Raspberry Pi will reboot after completion."
 printf "Special thanks to Joe Sanford at Tufts University.  This script was derived from his work.  Thank you Joe!"
 echo ""
 
+SETUP_PATH=$PWD
+
 if [[ $EUID -ne 0 ]]; then
 	echo "This script must be run as root" 
 	echo "Please use sudo bash install.sh"
@@ -165,9 +167,9 @@ then
 fi
 
 echo "Installing libraries for Python"
-echo $PWD
-cd ../Software/BrickPi_Python/
-sudo python setup.py install
+cd $SETUP_PATH		# Back to the Setup directory.  If wiringPi was called, we're in the wrong place, and that can throw this off.
+cd ../Software/BrickPi_Python/	# Change to the Python install location
+sudo python setup.py install	# Setup python install, run.
 
 echo " "
 echo "Restarting"
