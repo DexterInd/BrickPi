@@ -5,10 +5,11 @@
 # GoPiGo versions. To make it easier for people to read and understand, the minimum number of changes were.
 # This makes it easier to compare and contrast GoPiGo for learning purposes.
 #
-# http://www.dexterindustries.com/GoPiGo/                                                                
+# http://www.dexterindustries.com/BrickPi                                                          
 # History
 # ------------------------------------------------
 # Author     Date      		Comments
+# John Cole  01 Jan 17          Updating for the big code move!
 # Peter Lin  27 Dec 14          Simple port for BrickPi
 # Karan      24 July 14  	Initial Authoring                                                          
 # These files have been made available online through a Creative Commons Attribution-ShareAlike 3.0  license.

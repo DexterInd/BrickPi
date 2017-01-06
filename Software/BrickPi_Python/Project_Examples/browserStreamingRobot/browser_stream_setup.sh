@@ -25,9 +25,10 @@ echo "=================================="
 
 #Installing Mjpeg streamer http://blog.miguelgrinberg.com/post/how-to-build-and-run-mjpg-streamer-on-the-raspberry-pi
 sudo apt-get update
-sudo apt-get install libjpeg8-dev imagemagick libv4l-dev
+sudo apt-get install libjpeg8-dev imagemagick libv4l-dev -y
 sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
 wget http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
+# Note that sometimes the link above fails to work. If that is the case, you can also download from your web browser by opening this page: http://sourceforge.net/p/mjpg-streamer/code/HEAD/tarball.
 unzip mjpg-streamer-code-182.zip
 cd mjpg-streamer-code-182/mjpg-streamer
 make mjpg_streamer input_file.so output_http.so
@@ -47,7 +48,7 @@ git clone https://github.com/DexterInd/userland.git
 cd userland
 mkdir build
 cd build
-sudo apt-get install gcc build-essential cmake vlc rpi-update
+sudo apt-get install gcc build-essential cmake vlc rpi-update -y
 cmake ../
 make
 sudo make install

@@ -2,7 +2,7 @@
 ##############################################################################################################                                                              
 # This example is for streaming video and controlling BrickPi from a web browser it is a port of
 # robot_controller by Dexter Industries
-# http://www.dexterindustries.com/GoPiGo/                                                                
+# http://www.dexterindustries.com/BrickPi                                                             
 # History
 # ------------------------------------------------
 # Author     Date      		Comments

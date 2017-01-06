@@ -20,7 +20,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         msg = message.split(" ")
         lr = (float(msg[0]))*2 #change 2 if necessary
         fw = (float(msg[1]))/40*250 #change the numbers if necessary
-        #following 2 lines must work good mostly.. if the car is running in reverse add - after = in both lines 
+        #following 2 lines must work well if the car is running in reverse add - after = in both lines 
         BrickPi.MotorSpeed[PORT_A] = (int(fw) + int(lr))
         BrickPi.MotorSpeed[PORT_D] = (int(fw) - int(lr))
         BrickPiUpdateValues();

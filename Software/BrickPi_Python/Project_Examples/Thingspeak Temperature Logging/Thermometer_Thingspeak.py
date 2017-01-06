@@ -4,7 +4,7 @@
 # The Thermometer value is read by BrickPi mounted on RaspberryPi.
 # For more information on BrickPi and Thermometer sensor visit http://www.dexterindustries.com/
 # To get started on basics of pushing data to thingspeak visit : www.australianrobotics.com.au/news/how-to-talk-to-thingspeak-with-python-a-memory-cpu-monitor 
-# For the working of thermometer code alone visit : https://github.com/DexterInd/BrickPi_Python/blob/master/Sensor%20Examples/DI-dTemp%20test.py
+# For the working of thermometer code alone visit : https://github.com/DexterInd/BrickPi/blob/master/Software/BrickPi_Python/Sensor%20Examples/DI-dTemp%20test.py
 # Connect the Thermometer to the SENSOR PORT_3 of BrickPi
 
 import httplib, urllib

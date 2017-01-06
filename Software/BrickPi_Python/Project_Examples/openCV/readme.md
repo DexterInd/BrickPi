@@ -8,7 +8,7 @@ Installation
 Follow these instructions to install OpenCV.
 ![OpenCV source code](http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/ "")
 
-1. run install.sh script
+1. Run install.sh script
 
 This will take 5-6 hours to complete. The script starts by using apt-get to install the required libraries. When prompted by the installer, answer yes. When all the required libraries are done, it will run cmake to configure unix make. Make will compile the code, which takes the bulk of the time. Once make is done, make install will copy the binaries to /usr/local directory. 
 
