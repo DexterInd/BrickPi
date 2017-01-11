@@ -1,0 +1,10 @@
+yum install libjpeg-turbo-utils
+yum install libjpeg-turbo-devel
+
+yum install ImageMagick
+
+yum install subversion
+
+sudo mkdir /tmp/stream/
+
+sudo yum install libpcre3-dev libpcrecpp0 libva-dev libva-x11-1 libva1

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/home/pi/Desktop/BrickPi_Scratch/BrickPi_Scratch_Scripts/BrickPi_Scratch_Start.sh
+Icon=/usr/share/scratch/Media/Costumes/Animals/cat1-a.gif
+Terminal=false
+Name=BrickPi_Scratch_Start
+Comment= Programming system and content development tool
+Categories=Application;Education;Development;
+MimeType=application/x-scratch-project
