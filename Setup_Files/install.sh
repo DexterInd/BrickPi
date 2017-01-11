@@ -46,7 +46,9 @@ fi
 echo " "
 echo "Installing Dependencies"
 echo "======================="
-sudo apt-get dist-upgrade
+
+# don't pull Pixel in!
+# sudo apt-get dist-upgrade
 sudo apt-get install -y python-pip git libi2c-dev python-serial python-rpi.gpio i2c-tools python-smbus python-setuptools python-dev build-essential
 sudo pip install -U future
 echo "Dependencies installed"
