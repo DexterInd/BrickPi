@@ -12,15 +12,10 @@ We've devoted some serious time to trying to make sure that it's easy to get sta
 
 ## This Repository
 
-This repository only holds firmware and hardware designs.  
-**Python** - If you're looking for our BrickPi Python libraries, look here:	https://github.com/DexterInd/BrickPi_Python
-	
-**C** - If you're looking for the BrickPi C Libraries, look here: 		https://github.com/DexterInd/BrickPi_C
-	
-**Scratch** - If you're looking for the BrickPi Scratch libraries, look here:	https://github.com/DexterInd/BrickPi_Scratch
+This repository only holds firmware and hardware designs, as well as software examples for Python, C, and Scratch.  
 
 ## Image for the SD Card
-Our custom image for the Raspberry Pi makes using the BrickPi easy.  We've modified wheezy a little bit.  You can download the latest image here [on our getting started section.](http://www.dexterindustries.com/BrickPi/getting-started/pi-prep/)
+Our custom image for the Raspberry Pi makes using the BrickPi easy.  We've modified the standard Raspbian a little bit.  You can download the latest image here [on our getting started section.](https://www.dexterindustries.com/howto/install-raspbian-for-robots-image-on-an-sd-card/)
 
 	
 ## Firmware
@@ -28,5 +23,5 @@ The board firmware is made in Arduino in order to make it super-hackable.  The f
 
 The board supports LEGO NXT motors, EV3 motors, and LEGO NXT sensors, as well as many of Dexter Industries sensors for LEGO Mindstorms.
 
-[Dexter Industries] (http://www.dexterindustries.com/)
-[http://www.dexterindustries.com/BrickPi] (http://www.dexterindustries.com/BrickPi)
+[Dexter Industries](http://www.dexterindustries.com/)
+[BrickPi for the Raspberry Pi](http://www.dexterindustries.com/BrickPi)

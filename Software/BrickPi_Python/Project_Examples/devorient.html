@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Android Accelerometer</title>
+	</head>
+	<body>
+		
+		<div class="formm" id="formm">
+			<form id="f" name="f" onsubmit=" return false">
+				<table style="font-size: 50px;">
+				<tbody>
+				<tr>
+				<td><label>Enter IP:  </label></td>
+				<td><input id="ip" name="ip" type="text" required style="font-size: 50px;"></td>
+				</tr>
+				<tr>
+				<td><label>Enter Port:</label></td>
+				<td><input id="port" name="port" type="number" required style="font-size: 50px;"></td>
+				</tr>
+				<tr><td><input id="but" type="submit" value="Connect" style=" font-size: 50px;" ></td></tr>
+				</tbody>
+				</table>
+			</form>
+		</div>
+		<br>
+		<br>
+		<div class="main">
+			<table style="font-size: 50px;">
+				<tbody>
+					<tr>
+						<td>Connection Status:</td>
+						<td id="doEvent">Enter IP and Port...</td>
+					</tr>
+					<tr>
+						<td>Left/Right</td>
+						<td id="tiltLR">0</td>
+					</tr>
+					<tr>
+						<td>Forward/Back</td>
+						<td id="tiltFB">0</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
+		
+		
+	</body>
+	<script type="text/javascript">
+			//var connection = new WebSocket('ws://localhost:8888/ws');
+			
+			document.getElementById("but").onclick = function(){
+			//alert(document.getElementById("ip").value + ':' + document.getElementById("port").value + '/ws' );
+			connection = new WebSocket('ws://' + document.getElementById("ip").value + ':' + document.getElementById("port").value + '/ws' );
+			document.getElementById("doEvent").innerHTML="Connected";
+			//connection.send('Ping');
+			
+			if(window.DeviceOrientationEvent){
+				
+				window.addEventListener('deviceorientation', function(eventData){
+				var tiltLR=eventData.gamma; 
+				var tiltFB=eventData.beta;
+				//var dir=eventData.alpha;
+				deviceOrientationHandler(tiltLR,tiltFB);},false);
+			}
+			else{
+				document.getELementById("doEvent").innerHTML="Not Supported"
+			}
+			return false;
+			};
+			function deviceOrientationHandler(tiltLR,tiltFB){
+				lr=Math.round(tiltLR*100)/100;
+				fb=Math.round(tiltFB*100)/100;
+				//d=Math.round(dir);
+				document.getElementById("tiltLR").innerHTML=lr;
+				document.getElementById("tiltFB").innerHTML=fb;
+				//document.getElementById("direc").innerHTML=d;
+				connection.send(lr.toString() + ' ' + fb.toString() );//+ ' ' + d.toString());
+			}
+		</script>
+</html>
