@@ -3,17 +3,17 @@
 # Initial Date: June 26, 2013 - Jaikrishna
 # Update: June 3, 2014 - Karan Nayan- Exception handling and recovery code added
 # Update: March 13, 2016 -	John Cole - EV3 Sensors Integrated.
-## 
+##
 # This file is for interfacing Scratch with BrickPi
 # The Python program acts as the Bridge between Scratch & BrickPi and must be running for the Scratch program to run.
 # Requirements :
 # Prior to running this progam, ScratchPy must be installed on the system. Refer BrickPi documentation on how to install ScratchPy.
 # The BrickPi python library file (BrickPi.py) must be placed in the same path as this file.
 # Remote Sensor values must be enabled in Scratch
-# This python code must be restarted everytime you need to run a new program. 
-# 
+# This python code must be restarted everytime you need to run a new program.
+#
 # Broadcasts from Python:
-# 'READY' tells that BrickPi serial setup succeeded. Use 'When I receive READY' to specify starting point of program. 
+# 'READY' tells that BrickPi serial setup succeeded. Use 'When I receive READY' to specify starting point of program.
 # 'UPDATED' tells that sensor values of Scratch has been updated from BrickPi
 
 # Broadcast from Scratch:
@@ -21,11 +21,11 @@
 # 'START' command tells RPi to start continuous transmission to BPi
 # 'UPDATE' command calls for an updation of Sensor Values of Scratch
 # 'STOP' command stops the continuous up
-# SETUP and START must be done only once after configuring the Sensors. UPDATE is Required atleast once. 
+# SETUP and START must be done only once after configuring the Sensors. UPDATE is Required atleast once.
 
 # Setting Sensor type:
 
-# S1 ULTRASONIC 
+# S1 ULTRASONIC
 # S2 TOUCH
 # S3 RAW
 # S4 COLOR
@@ -47,6 +47,7 @@ from builtins import input
 import scratch,sys,threading,math
 from BrickPi import *
 import ir_receiver_check
+import subprocess
 import os
 
 en_debug = 1
@@ -66,7 +67,9 @@ if ir_receiver_check.check_ir():
     print ("Disable IR receiver before continuing!")
     print ("Disable IR receiver before continuing!")
     print ("Disable IR receiver before continuing!")
-    exit() 
+    ir_error_text_arg = "--text='Disable your IR receiver before continuing!\nThe BrickPi does not work when IR is enabled.'"
+    error = subprocess.Popen(["zenity", "--error", ir_error_text_arg], stdout=subprocess.PIPE)
+    exit()
 
 try:
     s = scratch.Scratch()
@@ -77,7 +80,7 @@ try:
 except scratch.ScratchError:
     print ("BrickPi Scratch: Scratch is either not opened or remote sensor connections aren't enabled")
     #sys.exit(0)
-    
+
 # The sensor types below need to be different for EV3 sensors
 # See the Python sensor examples for reference
 
@@ -95,7 +98,7 @@ stype = { 'EV3US' : TYPE_SENSOR_EV3_US_M0,		# Continuous measurement, distance, 
 'COLOR' : TYPE_SENSOR_COLOR_FULL ,
 'RAW' : TYPE_SENSOR_RAW,
 'TEMP' : TYPE_SENSOR_RAW,
-'FLEX' : TYPE_SENSOR_RAW}   
+'FLEX' : TYPE_SENSOR_RAW}
 
 BrickPiSetup()
 
@@ -147,7 +150,7 @@ except NameError:
 while True:
     try:
         m = s.receive()
-        
+
         while m == None or m[0] == 'sensor-update':
                 m = s.receive()
 
@@ -166,7 +169,7 @@ while True:
             if sensor[1] :
                 if spec[1] :
                     s.sensorupdate({'S1' : comp(BrickPi.Sensor[PORT_1],spec[1])})
-                else:                
+                else:
                     s.sensorupdate({'S1' : BrickPi.Sensor[PORT_1]})
             if sensor[2] :
                 if spec[2] :
@@ -242,12 +245,12 @@ while True:
                 call ([photo_cmd], shell=True)
                 os.chown(newimage,pi,pi)
                 print ("Picture Taken")
-                s.sensorupdate({'camera':"Picture Taken"})	
+                s.sensorupdate({'camera':"Picture Taken"})
             except:
                 if en_debug:
                     e = sys.exc_info()[1]
                     print ("Error taking picture")
-                s.sensorupdate({'camera':"Error"})	
+                s.sensorupdate({'camera':"Error"})
 
         elif msg == 'MA E' or msg == 'MAE' :
             BrickPi.MotorEnable[PORT_A] = 1
@@ -273,7 +276,7 @@ while True:
             BrickPi.MotorSpeed[PORT_C] = int(msg[2:])
         elif msg[:2] == 'MD' :
             BrickPi.MotorSpeed[PORT_D] = int(msg[2:])
-        
+
         elif (msg[:5].lower()=="SPEAK".lower()):
             try:
                 from subprocess import call
