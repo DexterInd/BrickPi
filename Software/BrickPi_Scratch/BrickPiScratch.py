@@ -67,9 +67,12 @@ if ir_receiver_check.check_ir():
     print ("Disable IR receiver before continuing!")
     print ("Disable IR receiver before continuing!")
     print ("Disable IR receiver before continuing!")
-    ir_error_text_arg = "Disable your IR receiver before continuing!\nThe BrickPi does not work when IR is enabled."
-    subprocess.call(["zenity", "--error", "--text", ir_error_text_arg])
-    exit()
+    try:
+        ir_error_text_arg = "Disable your IR receiver before continuing!\nThe BrickPi does not work when IR is enabled."
+        subprocess.call(["zenity", "--error", "--text", ir_error_text_arg])
+    except:
+        pass
+    exit() # Why not sys.exit(1)?
 
 try:
     s = scratch.Scratch()
