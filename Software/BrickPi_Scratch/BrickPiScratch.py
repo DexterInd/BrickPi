@@ -42,7 +42,7 @@
 
 from __future__ import print_function
 from __future__ import division
-from builtins import input
+#from builtins import input
 
 import scratch,sys,threading,math
 from BrickPi import *
