@@ -35,12 +35,13 @@
 #		"kill -9 pid"
 #	If the error does not go away, try changin the port number '9093' both in the client and server code
 
-from BrickPi import *   #import BrickPi.py file to use BrickPi operations
+from BrickPi import * #import BrickPi.py file to use BrickPi operations
 import threading
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.template
+import time
 
 c=0
 #Initialize TOrnado to use 'GET' and load index.html
