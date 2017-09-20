@@ -11,6 +11,14 @@ This repository is for the BrickPi and BrickPi+. For the BrickPi3 (hardware vers
 ## Getting Started
 We've devoted some serious time to trying to make sure that it's easy to get started.  If you're lost, we would like to first direct you to our [website for the BrickPi](http://www.dexterindustries.com/BrickPi/getting-started/).
 
+## Quick Install
+
+In order to quick install the `BrickPi` repository, open up a terminal and type the following command:
+```
+sudo curl -L dexterindustries.com/update_brickpi_plus | bash
+```
+The same command can be used for updating the `BrickPi` to the latest version.
+
 ## This Repository
 This repository holds firmware and hardware designs, as well as software examples for Python, C, and Scratch.  
 
