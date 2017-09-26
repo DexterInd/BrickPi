@@ -15,7 +15,7 @@ We've devoted some serious time to trying to make sure that it's easy to get sta
 
 In order to quick install the `BrickPi` repository, open up a terminal and type the following command:
 ```
-sudo curl -L dexterindustries.com/update_brickpi_plus | bash
+sudo curl -kL dexterindustries.com/update_brickpi_plus | bash
 ```
 The same command can be used for updating the `BrickPi` to the latest version.
 
