@@ -5,13 +5,13 @@ You can install the BrickPi on your own image using the install scripts here.  F
 ## Setup Commands
 
 To install, run the following commands:
-
-> sudo chmod +x install.sh
-
-> sudo ./install.sh
+```
+sudo chmod +x install.sh
+sudo ./install.sh
+```
 
 ## Developer Notes
-For those using Raspberry Pi 3, you will need to disable bluetooth.  This is done automatically by the install script above.  As a note to developers, the way Raspberry Pi 3 uses Bluetooth causes issues with BrickPi. 
+For those using Raspberry Pi 3, you will need to disable bluetooth.  This is done automatically by the install script above.  As a note to developers, the way Raspberry Pi 3 uses Bluetooth causes issues with BrickPi.
 
 Basic Steps Taken by the Install Script:
 
@@ -31,3 +31,10 @@ Basic Steps Taken by the Install Script:
 7. Saves the changes.
 8. `sudo python setup.py install`
 9. `sudo reboot`
+
+## Quick install
+
+For installing/updating the BrickPi without any headaches, enter the following command (requires internet access):
+```
+sudo curl -kL dexterindustries.com/update_brickpi_plus | bash
+```
